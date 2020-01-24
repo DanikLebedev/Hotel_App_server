@@ -37,51 +37,32 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var express_1 = require("express");
-var mongoose_1 = require("mongoose");
-var keys_1 = require("../keys/keys");
-var express_handlebars_1 = require("express-handlebars");
-var adminRoute_1 = require("../routes/adminRoute");
-var app = express_1["default"]();
-var hbs = express_handlebars_1["default"].create({
-    defaultLayout: 'main',
-    extname: 'hbs'
-});
-var PORT = 5000;
-app.engine('hbs', hbs.engine);
-app.set('view engine', 'hbs');
-app.set('views', 'views');
-app.use('/', adminRoute_1["default"]);
-app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+var user_1 = require("../models/user");
+var router = express_1.Router();
+router.post('/admin', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, e_1;
     return __generator(this, function (_a) {
-        res.render('index.hbs');
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0:
+                console.log(req.body);
+                user = new user_1["default"]({
+                    email: req.body.email,
+                    password: req.body.password
+                });
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, user.save()];
+            case 2:
+                _a.sent();
+                res.redirect('/');
+                return [3 /*break*/, 4];
+            case 3:
+                e_1 = _a.sent();
+                console.log(e_1);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
     });
 }); });
-function start() {
-    return __awaiter(this, void 0, void 0, function () {
-        var e_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, mongoose_1["default"].connect(keys_1["default"].MONGODB_URI, {
-                            useNewUrlParser: true,
-                            useFindAndModify: false,
-                            useUnifiedTopology: true
-                        })];
-                case 1:
-                    _a.sent();
-                    app.listen(PORT, function () {
-                        console.log('server started at http://localhost:' + PORT);
-                    });
-                    return [3 /*break*/, 3];
-                case 2:
-                    e_1 = _a.sent();
-                    console.log(e_1);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
-            }
-        });
-    });
-}
-start();
+exports["default"] = router;
