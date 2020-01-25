@@ -132,57 +132,35 @@ const __generator =
     };
 exports.__esModule = true;
 const express_1 = require('express');
-const mongoose_1 = require('mongoose');
-const keys_1 = require('../keys/keys');
-const express_handlebars_1 = require('express-handlebars');
-const adminRoute_1 = require('../routes/adminRoute');
-const app = express_1['default']();
-const hbs = express_handlebars_1['default'].create({
-    defaultLayout: 'main',
-    extname: 'hbs',
-});
-const PORT = 5000;
-app.engine('hbs', hbs.engine);
-app.set('view engine', 'hbs');
-app.set('views', 'views');
-app.use('/', adminRoute_1['default']);
-app.get('/', function(req, res) {
+const user_1 = require('../models/user');
+const router = express_1.Router();
+router.post('/admin', function(req, res) {
     return __awaiter(void 0, void 0, void 0, function() {
-        return __generator(this, function(_a) {
-            res.render('index.hbs');
-            return [2 /*return*/];
-        });
-    });
-});
-function start() {
-    return __awaiter(this, void 0, void 0, function() {
-        let e_1;
+        let user, e_1;
         return __generator(this, function(_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [
-                        4 /*yield*/,
-                        mongoose_1['default'].connect(keys_1['default'].MONGODB_URI, {
-                            useNewUrlParser: true,
-                            useFindAndModify: false,
-                            useUnifiedTopology: true,
-                        }),
-                    ];
-                case 1:
-                    _a.sent();
-                    app.listen(PORT, function() {
-                        console.log('server started at http://localhost:' + PORT);
+                    console.log(req.body);
+                    user = new user_1['default']({
+                        email: req.body.email,
+                        password: req.body.password,
                     });
-                    return [3 /*break*/, 3];
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, user.save()];
                 case 2:
+                    _a.sent();
+                    res.redirect('/');
+                    return [3 /*break*/, 4];
+                case 3:
                     e_1 = _a.sent();
                     console.log(e_1);
-                    return [3 /*break*/, 3];
-                case 3:
+                    return [3 /*break*/, 4];
+                case 4:
                     return [2 /*return*/];
             }
         });
     });
-}
-start();
+});
+exports['default'] = router;

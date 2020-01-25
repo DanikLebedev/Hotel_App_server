@@ -9,7 +9,7 @@ module.exports = {
     target: 'node',
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: 'index.js'
+        filename: 'index.scss.js'
     },
     resolve: {
         extensions: ['.ts', '.js'],

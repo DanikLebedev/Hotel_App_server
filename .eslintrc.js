@@ -8,7 +8,8 @@
             "eslint:recommended",
             "plugin:@typescript-eslint/eslint-recommended",
             "plugin:@typescript-eslint/recommended",
-            "plugin:@typescript-eslint/recommended-requiring-type-checking"
+            "plugin:@typescript-eslint/recommended-requiring-type-checking",
+            "plugin:prettier/recommended"
         ],
         "parser": "@typescript-eslint/parser",
         "parserOptions": {
@@ -17,7 +18,8 @@
             "createDefaultProgram": true
 
         },
-        // Плагин с наборами правил для TypeScript
-        "plugins": ["@typescript-eslint"],
-        "rules": {}
+        "plugins": ["@typescript-eslint", "prettier"],
+        "rules": {
+            "prettier/prettier":"error"
+        }
     }
