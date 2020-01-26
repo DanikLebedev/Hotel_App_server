@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "bcrypt": "^3.0.7",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
@@ -41,7 +41,7 @@
   },
   "scripts": {
     "build": "webpack -w",
-    "server": "npm run build & nodemon build/index.scss.js",
+    "server": "concurrently \"npm run build\" \"nodemon build/index.scss.js\"",
     "test": "jest src/tests/index.test.ts",
     "eslint": "eslint '*/**/*.{ts,tsx}' --quiet --fix",
     "prettier": "prettier  — write src/**/*.ts",

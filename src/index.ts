@@ -1,11 +1,10 @@
 import express, { Express } from 'express';
 import mongoose from 'mongoose';
 import exphbs from 'express-handlebars';
-import cors from 'cors'
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import authRoute from './routes/authRoute';
 import keys from '../keys/keys';
-
 
 const app: Express = express();
 const hbs: Exphbs = exphbs.create({
@@ -30,12 +29,12 @@ app.use(
 );
 app.use('/api/auth', authRoute);
 
-// app.use(function(req, res, next): void {
-//     return res.status(404).render('404');
-// });
-// app.use(function(err, req, res, next): void {
-//     return res.status(500).send({ error: err });
-// });
+app.use(function(req, res, next): void {
+    return res.status(404).render('404');
+});
+app.use(function(err, req, res, next): void {
+    return res.status(500).send({ error: err });
+});
 
 const PORT: number = keys.PORT || 5000;
 

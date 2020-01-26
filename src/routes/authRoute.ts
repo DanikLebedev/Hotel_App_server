@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { check, validationResult, Result, ValidationError } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
@@ -58,20 +58,17 @@ router.post(
 router.post(
     '/login',
     [
-        check('password', 'Incorrect password').exists,
-        check('email', 'Please, input correct email').normalizeEmail().isEmail,
+        check('email', 'Incorrect email').isEmail(),
+        check('password', "Minimal password's length is 6").isLength({ min: 6 }),
     ],
     async (req: Request, res: Response): Promise<any> => {
         try {
             const errors: Result<ValidationError> = validationResult(req);
-
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array(), message: 'incorrect login or password' });
             }
 
             const { email, password }: User = req.body;
-
-            console.log('Body', req.body);
 
             const user = await User.findOne({ email });
 
@@ -86,7 +83,6 @@ router.post(
             }
 
             const token = jwt.sign({ userId: user.id }, keys.jwtSecret, { expiresIn: '1h' });
-
             res.json({ token, userId: user.id });
         } catch (e) {
             res.status(500).json({ message: 'something wrong happen...' });
