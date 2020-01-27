@@ -13,6 +13,7 @@
     "mongoose": "^5.8.9"
   },
   "devDependencies": {
+    "concurrently": "^5.0.2",
     "@types/express": "^4.17.2",
     "@types/express-handlebars": "^3.1.0",
     "@types/jest": "^24.9.0",
@@ -43,7 +44,7 @@
     "build": "webpack -w",
     "server": "concurrently \"npm run build\" \"nodemon build/index.scss.js\"",
     "test": "jest src/tests/index.test.ts",
-    "eslint": "eslint '*/**/*.{ts,tsx}' --quiet --fix",
+    "eslint": "eslint */**/*.{ts,tsx} --quiet --fix",
     "prettier": "prettier  — write src/**/*.ts",
     "client": "npm run start --prefix ../hotel_app_client",
     "dev": "concurrently \"npm run server\" \"npm run client\""

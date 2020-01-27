@@ -12,22 +12,7 @@ const userSchema: Schema = new Schema({
     photo: {
         type: String,
     },
-    order: {
-        rooms: [
-            {
-                count: {
-                    type: Number,
-                    required: true,
-                    default: 1,
-                },
-                roomId: {
-                    type: Types.ObjectId,
-                    ref: 'Room',
-                    required: true,
-                },
-            },
-        ],
-    },
+    order: [{ type: Types.ObjectId, ref: 'Category', required: true }],
 });
 
 interface User extends Document {

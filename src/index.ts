@@ -2,8 +2,10 @@ import express, { Express } from 'express';
 import mongoose from 'mongoose';
 import exphbs from 'express-handlebars';
 import cors from 'cors';
+import adminRoute from './routes/adminRoute';
 import bodyParser from 'body-parser';
 import authRoute from './routes/authRoute';
+import orderRoute from './routes/orderRoutes';
 import keys from '../keys/keys';
 
 const app: Express = express();
@@ -28,10 +30,13 @@ app.use(
     }),
 );
 app.use('/api/auth', authRoute);
+app.use('/api/admin', adminRoute);
+app.use('/api/orders', orderRoute);
 
 app.use(function(req, res, next): void {
     return res.status(404).render('404');
 });
+
 app.use(function(err, req, res, next): void {
     return res.status(500).send({ error: err });
 });
@@ -55,3 +60,5 @@ async function start(): Promise<void> {
 }
 
 start();
+
+export default app;
