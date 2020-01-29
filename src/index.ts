@@ -1,6 +1,6 @@
 import express, { Express } from 'express';
 import mongoose from 'mongoose';
-import exphbs from 'express-handlebars';
+// import exphbs from 'express-handlebars';
 import cors from 'cors';
 import adminRoute from './routes/adminRoute';
 import bodyParser from 'body-parser';
@@ -9,16 +9,16 @@ import orderRoute from './routes/orderRoutes';
 import keys from '../keys/keys';
 
 const app: Express = express();
-const hbs: Exphbs = exphbs.create({
-    defaultLayout: 'main',
-    extname: 'hbs',
-});
-
-app.engine('hbs', hbs.engine);
-
-app.set('view engine', 'hbs');
-
-app.set('views', 'views');
+// const hbs: Exphbs = exphbs.create({
+//     defaultLayout: 'main',
+//     extname: 'hbs',
+// });
+//
+// app.engine('hbs', hbs.engine);
+//
+// app.set('view engine', 'hbs');
+//
+// app.set('views', 'views');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

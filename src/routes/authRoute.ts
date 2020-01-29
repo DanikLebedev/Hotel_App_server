@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { check, validationResult, Result, ValidationError } from 'express-validator';
 import jwt from 'jsonwebtoken';
-import User from '../models/user';
+import Customer from '../models/customer';
 import keys from '../../keys/keys';
 
 const router: Router = Router();
@@ -31,7 +31,7 @@ router.post(
         try {
             const { email, password }: User = req.body;
 
-            const candidate = await User.findOne({ email });
+            const candidate = await Customer.findOne({ email });
 
             if (candidate) {
                 return res.status(400).json({
@@ -41,7 +41,7 @@ router.post(
 
             const hashPassword = await bcrypt.hash(password, 12);
 
-            const user = new User({
+            const user = new Customer({
                 email,
                 password: hashPassword,
             });
@@ -70,7 +70,7 @@ router.post(
         try {
             const { email, password }: User = req.body;
 
-            const user = await User.findOne({ email });
+            const user = await Customer.findOne({ email });
 
             if (!user) {
                 return res.status(400).json({ message: 'User not found' });
@@ -83,7 +83,7 @@ router.post(
             }
 
             const token = jwt.sign({ userId: user.id }, keys.jwtSecret, { expiresIn: '1h' });
-            return res.json({ token, userId: user.id});
+            return res.json({ token, userId: user.id });
         } catch (e) {
             return res.status(500).json({ message: 'something wrong happen...' });
         }

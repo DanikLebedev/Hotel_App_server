@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import keys from '../../keys/keys';
 
-export const auth: Function = (req, res, next): Response | void => {
+export const auth = (req, res, next): Response | void => {
     if (req.method === 'OPTIONS') {
         return next();
     }
@@ -10,13 +10,15 @@ export const auth: Function = (req, res, next): Response | void => {
         const token: string = req.headers.authorization.split(' ')[1]; // "Bearer TOKEN"
 
         if (!token) {
-            res.redirect('/auth');
+            console.log('no token')
+            return res.status(401).redirect('/api/auth');
         }
 
         const decoded = jwt.verify(token, keys.jwtSecret);
         req.user = decoded;
         next();
     } catch (e) {
-        res.status(401).json({ message: 'Need to authorize' });
+        console.log('no token')
+        return res.status(401).redirect('/api/auth');
     }
 };
