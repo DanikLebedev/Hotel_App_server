@@ -5,8 +5,9 @@ import cors from 'cors';
 import adminRoute from './routes/adminRoute';
 import bodyParser from 'body-parser';
 import authRoute from './routes/authRoute';
-import orderRoute from './routes/orderRoutes';
+import clientRoute from './routes/clientRoutes'
 import keys from '../keys/keys';
+import { DbServices } from './db/dbServices';
 
 const app: Express = express();
 // const hbs: Exphbs = exphbs.create({
@@ -31,10 +32,10 @@ app.use(
 );
 app.use('/api/auth', authRoute);
 app.use('/api/admin', adminRoute);
-app.use('/api/orders', orderRoute);
+app.use('/api/client', clientRoute)
 
-app.use(function(req, res, next): void {
-    return res.status(404).render('404');
+app.use(function(req, res, next, err): void {
+    return res.status(404).send({ error: err });
 });
 
 app.use(function(err, req, res, next): void {
@@ -45,12 +46,7 @@ const PORT: number = keys.PORT || 5000;
 
 async function start(): Promise<void> {
     try {
-        await mongoose.connect(keys.MONGODB_URI, {
-            useNewUrlParser: true,
-            useFindAndModify: false,
-            useUnifiedTopology: true,
-        });
-
+        await DbServices.connectToMongo();
         app.listen(PORT, (): void => {
             console.log('server started at http://localhost:' + PORT);
         });

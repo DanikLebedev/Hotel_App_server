@@ -5,15 +5,30 @@ const orderSchema: Schema = new Schema({
         type: Types.ObjectId,
         ref: 'Customer',
     },
-    roomId: {
-        type: Types.ObjectId,
-        ref: 'Room',
+    category: {
+        type: String,
+        required: true,
+    },
+    checkIn: {
+        type: Date,
+        required: true,
+    },
+    checkOut: {
+        type: Date,
+        required: true,
+    },
+    guests: {
+        type: Number,
+        required: true,
     },
 });
 
 interface Order extends Document {
     customerId: string;
-    roomId: string;
+    category: string;
+    checkIn: Date;
+    checkOut: Date;
+    guests: number;
 }
 
 const OrderModel: Model<Order> = model<Order>('Order', orderSchema);

@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model } from 'mongoose';
+import { Schema, model, Document, Model, Types } from 'mongoose';
 
 const categorySchema: Schema = new Schema({
     title: {

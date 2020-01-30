@@ -1,12 +1,8 @@
 import { Schema, model, Types, Document, Model } from 'mongoose';
 const roomSchema: Schema = new Schema({
-    categoryId: {
-        type: Types.ObjectId,
-        ref: 'Category',
-    },
     category: {
         type: String,
-        required: true
+        required: true,
     },
     title: {
         type: String,

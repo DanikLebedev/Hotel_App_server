@@ -6,19 +6,14 @@ export const auth = (req, res, next): Response | void => {
         return next();
     }
 
-    try {
-        const token: string = req.headers.authorization.split(' ')[1]; // "Bearer TOKEN"
+    const token: string = req.headers.authorization.split(' ')[1]; //
 
-        if (!token) {
-            console.log('no token')
-            return res.status(401).redirect('/api/auth');
-        }
-
-        const decoded = jwt.verify(token, keys.jwtSecret);
-        req.user = decoded;
-        next();
-    } catch (e) {
-        console.log('no token')
-        return res.status(401).redirect('/api/auth');
+    if (!token) {
+        console.log('no token');
+        return res.redirect('/api/auth');
     }
+
+    const decoded: {} = jwt.verify(token, keys.jwtSecret);
+    req.user = decoded;
+    next();
 };
