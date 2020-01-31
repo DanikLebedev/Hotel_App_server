@@ -1,26 +1,17 @@
 import express, { Express } from 'express';
 import mongoose from 'mongoose';
-// import exphbs from 'express-handlebars';
+import path from 'path';
 import cors from 'cors';
 import adminRoute from './routes/adminRoute';
 import bodyParser from 'body-parser';
 import authRoute from './routes/authRoute';
-import clientRoute from './routes/clientRoutes'
+import clientRoute from './routes/clientRoutes';
 import keys from '../keys/keys';
 import { DbServices } from './db/dbServices';
+import fileMiddleware from './middleware/fileMiddleware';
 
 const app: Express = express();
-// const hbs: Exphbs = exphbs.create({
-//     defaultLayout: 'main',
-//     extname: 'hbs',
-// });
-//
-// app.engine('hbs', hbs.engine);
-//
-// app.set('view engine', 'hbs');
-//
-// app.set('views', 'views');
-
+app.use(fileMiddleware.single('image'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
@@ -30,9 +21,10 @@ app.use(
         optionsSuccessStatus: 200,
     }),
 );
+app.use(express.static(path.join(__dirname, 'images')));
 app.use('/api/auth', authRoute);
 app.use('/api/admin', adminRoute);
-app.use('/api/client', clientRoute)
+app.use('/api/client', clientRoute);
 
 app.use(function(req, res, next, err): void {
     return res.status(404).send({ error: err });

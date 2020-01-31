@@ -11,7 +11,7 @@ const employeeSchema: Schema = new Schema({
     },
     status: {
         type: String,
-        required: true,
+        required: true
     },
 });
 

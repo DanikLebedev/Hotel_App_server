@@ -52,7 +52,7 @@ export class DbServices {
     }
 
     public static async registerUser(req, res, Model): Promise<Response> {
-        const errors = validationResult(req);
+        const errors: Result = validationResult(req);
 
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
@@ -72,7 +72,7 @@ export class DbServices {
             const hashPassword: string = await bcrypt.hash(postParams.password, 12);
 
             const user = new Model({
-                email: postParams.email,
+                ...postParams,
                 password: hashPassword,
             });
 
@@ -108,11 +108,9 @@ export class DbServices {
             const token: string = jwt.sign({ userId: user.id }, keys.jwtSecret, { expiresIn: '1h' });
             return res.json({ token, userId: user.id });
         } catch (e) {
-            console.log(e)
-            return res.status(500).json({ message: e});
+            console.log(e);
+            return res.status(500).json({ message: e });
         }
     }
-    public static async deleteItem(req, res, Model, param) {
-
-    }
+    public static async deleteItem(req, res, Model, param) {}
 }

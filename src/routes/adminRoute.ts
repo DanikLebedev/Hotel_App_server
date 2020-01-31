@@ -6,8 +6,11 @@ import { Document } from 'mongoose';
 import Room from '../models/room';
 import Employee from '../models/employee';
 import StatusModel from '../models/status';
-
+import daoCategory from '../dao/daoCategory';
+import daoRoom from '../dao/daoRoom';
 import { DbServices } from '../db/dbServices';
+import daoEmployee from '../dao/daoEmployee';
+import daoStatus from '../dao/daoStatus';
 
 const router: Router = Router();
 
@@ -30,14 +33,14 @@ router.post(
 router.post(
     '/category',
     async (req: Request, res: Response): Promise<void> => {
-        await DbServices.postData(req, res, Category);
+        await daoCategory.postCategories(req, res, Category);
     },
 );
 
 router.get(
     '/category',
     async (req: Request, res: Response): Promise<void> => {
-        await DbServices.getData(req, res, Category);
+        await daoCategory.getAllCategories(req, res, Category);
     },
 );
 
@@ -56,19 +59,19 @@ router.delete(
 router.post(
     '/room',
     async (req: Request, res: Response): Promise<void> => {
-        await DbServices.postData(req, res, Room);
+        await daoRoom.postRooms(req, res, Room);
     },
 );
 
 router.get(
     '/room',
     async (req: Request, res: Response): Promise<void> => {
-        await DbServices.getData(req, res, Room);
+        await daoRoom.getAllRoom(req, res, Room);
     },
 );
 
 router.delete(
-    '/room/:id',
+    '/room/',
     async (req: Request, res: Response): Promise<void> => {
         try {
             const rooms = await Room.findByIdAndRemove(req.params.id);
@@ -82,14 +85,14 @@ router.delete(
 router.post(
     '/employee',
     async (req: Request, res: Response): Promise<void> => {
-        await DbServices.registerUser(req, res, Employee);
+        await daoEmployee.postEmployees(req, res, Employee);
     },
 );
 
 router.get(
     '/employee',
     async (req: Request, res: Response): Promise<void> => {
-        await DbServices.getData(req, res, Employee);
+        await daoEmployee.getAllEmployees(req, res, Employee);
     },
 );
 
@@ -108,13 +111,13 @@ router.delete(
 router.post(
     '/status',
     async (req: Request, res: Response): Promise<void> => {
-        await DbServices.postData(req, res, StatusModel);
+        await daoStatus.postStatus(req, res, StatusModel);
     },
 );
 router.get(
     '/status',
     async (req: Request, res: Response): Promise<void> => {
-        await DbServices.getData(req, res, StatusModel);
+        await daoStatus.getAllStatuses(req, res, StatusModel);
     },
 );
 

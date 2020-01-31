@@ -4,6 +4,7 @@ import { check, Result, ValidationError, validationResult } from 'express-valida
 import OrderModel from '../models/order';
 import RoomModel from '../models/room';
 import { DbServices } from '../db/dbServices';
+import { log } from 'util';
 const router = Router();
 
 router.get(
@@ -23,10 +24,16 @@ router.post(
         }
         try {
             const { customerId, category, checkIn, checkOut, guests } = req.body;
-
-            await RoomModel.findOneAndUpdate(category, { isBooked: true });
-
-            // const candidate = await OrderModel.findOne({ customerId });
+            const rooms = await RoomModel.find();
+            const filteredRooms = rooms.filter(item => {
+                return item.isBooked !== true && item.category === category;
+            });
+            if (!filteredRooms) {
+                res.status(500).json({ message: 'All rooms are booked' });
+            } else {
+                const notBookedRoomId = filteredRooms[0]._id;
+                await RoomModel.findByIdAndUpdate(notBookedRoomId, { isBooked: true }, { new: true });
+            }
 
             const order = new OrderModel({
                 customerId,
@@ -35,12 +42,6 @@ router.post(
                 checkOut,
                 guests,
             });
-
-            // if (candidate) {
-            //     return res.status(400).json({
-            //         message: 'Тhis room is already used',
-            //     });
-            // }
 
             await order.save();
 
