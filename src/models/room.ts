@@ -1,46 +1,51 @@
 import { Schema, model, Types, Document, Model } from 'mongoose';
-const roomSchema: Schema = new Schema({
-    category: {
-        type: String,
-        required: true,
+const roomSchema: Schema = new Schema(
+    {
+        category: {
+            type: String,
+            required: true,
+        },
+        title: {
+            type: String,
+            required: true,
+        },
+        price: {
+            type: Number,
+            required: true,
+        },
+        area: {
+            type: Number,
+            required: true,
+        },
+        guests: {
+            type: Number,
+            required: true,
+        },
+        rooms: {
+            type: Number,
+            required: true,
+        },
+        description: {
+            type: String,
+            required: true,
+        },
+        image: {
+            data: Buffer,
+            contentType: String,
+        },
+        customerId: {
+            type: Types.ObjectId,
+            ref: 'Customer',
+        },
+        isBooked: {
+            type: Boolean,
+            default: false,
+        },
     },
-    title: {
-        type: String,
-        required: true,
+    {
+        timestamps: true,
     },
-    price: {
-        type: Number,
-        required: true,
-    },
-    area: {
-        type: Number,
-        required: true,
-    },
-    guests: {
-        type: Number,
-        required: true,
-    },
-    rooms: {
-        type: Number,
-        required: true,
-    },
-    description: {
-        type: String,
-        required: true,
-    },
-    image: {
-        type: String,
-        required: true,
-    },
-    customerId: {
-        type: Types.ObjectId,
-        ref: 'Customer',
-    },
-    isBooked: {
-        type: Boolean,
-        default: false,
-    },
-});
+);
 
 interface Room extends Document {
     category: string;

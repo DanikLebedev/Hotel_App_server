@@ -12,34 +12,24 @@ interface Auth {
 }
 
 export class DbServices {
-    public static async getData(req: Request, res: Response, Model): Promise<void> {
+    public static async getData(Model): Promise<void> {
         try {
-            const data: MongooseDocument = await Model.find();
-            res.json(data);
+            const data = await Model.find();
+            return data;
         } catch (e) {
             console.log(e);
         }
     }
 
-    public static async postData(req: Request, res: Response, Model): Promise<Response> {
-        const errors: Result = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
-        }
+    public static async postData(body, Model): Promise<void> {
         try {
-            const postParams: {} = { ...req.body };
-
+            const postParams: {} = { ...body };
             const data = new Model({
                 ...postParams,
             });
-
             await data.save();
-
-            return res.status(201).json({ data });
         } catch (e) {
             console.log(e);
-            return res.status(500).json({ message: e });
         }
     }
 
@@ -49,39 +39,6 @@ export class DbServices {
             useFindAndModify: false,
             useUnifiedTopology: true,
         });
-    }
-
-    public static async registerUser(req, res, Model): Promise<Response> {
-        const errors: Result = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
-        }
-
-        try {
-            const postParams: Auth = { ...req.body };
-
-            const candidate: MongooseDocument = await Model.findOne({ email: postParams.email });
-
-            if (candidate) {
-                return res.status(400).json({
-                    message: 'Тhis email is already used',
-                });
-            }
-
-            const hashPassword: string = await bcrypt.hash(postParams.password, 12);
-
-            const user = new Model({
-                ...postParams,
-                password: hashPassword,
-            });
-
-            await user.save();
-
-            return res.status(201).json({ message: 'User was created' });
-        } catch (e) {
-            return res.status(500).json({ message: e });
-        }
     }
 
     public static async loginUser(req, res, Model) {

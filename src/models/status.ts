@@ -3,6 +3,8 @@ import { Schema, model, Types, Model, Document } from 'mongoose';
 const statusSchema: Schema = new Schema({
     title: {
         type: String,
+        required: true
+
     },
 });
 

@@ -15,12 +15,12 @@ const employeeSchema: Schema = new Schema({
     },
 });
 
-interface Employee extends Document {
+export interface EmployeeI extends Document {
     email: string;
     password: string;
     status: string;
 }
 
-const EmployeeModel: Model<Employee> = model<Employee>('Employee', employeeSchema);
+const EmployeeModel: Model<EmployeeI> = model<EmployeeI>('Employee', employeeSchema);
 
 export default EmployeeModel;

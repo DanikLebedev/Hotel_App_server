@@ -8,10 +8,24 @@ import authRoute from './routes/authRoute';
 import clientRoute from './routes/clientRoutes';
 import keys from '../keys/keys';
 import { DbServices } from './db/dbServices';
-import fileMiddleware from './middleware/fileMiddleware';
+import multer from 'multer';
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './uploads/');
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    },
+});
+
+const upload = multer({
+    storage,
+});
 
 const app: Express = express();
-app.use(fileMiddleware.single('image'));
+// app.use(fileMiddleware.single('image'));
+app.use(upload.single('image'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
@@ -21,7 +35,7 @@ app.use(
         optionsSuccessStatus: 200,
     }),
 );
-app.use(express.static(path.join(__dirname, 'images')));
+app.use(express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/api/auth', authRoute);
 app.use('/api/admin', adminRoute);
 app.use('/api/client', clientRoute);
