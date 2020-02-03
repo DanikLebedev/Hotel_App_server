@@ -21,13 +21,14 @@ export class DbServices {
         }
     }
 
-    public static async postData(body, Model): Promise<void> {
+    public static async postData(body, Model): Promise<any> {
         try {
             const postParams: {} = { ...body };
             const data = new Model({
                 ...postParams,
             });
             await data.save();
+            return data;
         } catch (e) {
             console.log(e);
         }

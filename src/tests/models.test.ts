@@ -4,9 +4,7 @@ import CategoryModel from '../models/category';
 import daoCategory from '../dao/daoCategory';
 const category = { title: 'Luxury' };
 
-describe('User Model Test', () => {
-    // It's just so easy to connect to the MongoDB Memory Server
-    // By using mongoose.connect
+describe('Category Model Test', () => {
     beforeAll(async () => {
         await mongoose.connect(
             keys.MONGODB_URI,
@@ -20,12 +18,16 @@ describe('User Model Test', () => {
         );
     });
 
-    it('create & save user successfully', async () => {
-        // @ts-ignore
-        const validCategory: { _id: string; title: string } = await daoCategory.getAllCategories(CategoryModel);
-        // Object Id should be defined when successfully saved to MongoDB.
+    it('should get all categories', async () => {
+        const validCategory = await daoCategory.getAllCategories(CategoryModel);
         expect(validCategory).toBeDefined();
         expect(typeof validCategory[0].title).toBe('string');
+    });
+
+    it('should create new category', async () => {
+        const validCategory = await daoCategory.postCategories(category, CategoryModel);
+        expect(validCategory).toBeDefined();
+        expect(validCategory['title']).toBe(category.title);
     });
 
     // Test Schema is working!!!

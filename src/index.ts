@@ -1,5 +1,4 @@
 import express, { Express } from 'express';
-import mongoose from 'mongoose';
 import path from 'path';
 import cors from 'cors';
 import adminRoute from './routes/adminRoute';
@@ -24,7 +23,6 @@ const upload = multer({
 });
 
 const app: Express = express();
-// app.use(fileMiddleware.single('image'));
 app.use(upload.single('image'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,6 +33,7 @@ app.use(
         optionsSuccessStatus: 200,
     }),
 );
+
 app.use(express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/api/auth', authRoute);
 app.use('/api/admin', adminRoute);
