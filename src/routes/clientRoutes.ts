@@ -3,8 +3,8 @@ import { auth } from '../middleware/authMiddleware';
 import { check, Result, ValidationError, validationResult } from 'express-validator';
 import OrderModel from '../models/order';
 import RoomModel from '../models/room';
-import daoRoom from '../dao/daoRoom';
-import daoOrder from '../dao/daoOrder';
+import daoRoom from '../controllers/room.controller';
+import daoOrder from '../controllers/order.controller';
 
 const router = Router();
 

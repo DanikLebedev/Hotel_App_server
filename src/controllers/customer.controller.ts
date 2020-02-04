@@ -1,10 +1,10 @@
 import { DbServices } from '../db/dbServices';
 
-export default class DaoCategory {
-    public static async getAllCategories(Model) {
+export default class CustomerController {
+    public static async getAllCustomers(Model) {
         return await DbServices.getData(Model);
     }
-    public static async postCategories(body, Model) {
+    public static async postCustomers(body, Model) {
         return await DbServices.postData(body, Model);
     }
 }

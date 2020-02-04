@@ -8,10 +8,10 @@ const statusSchema: Schema = new Schema({
     },
 });
 
-interface Status extends Document {
+export interface StatusInt extends Document {
     title: string;
 }
 
-const StatusModel: Model<Status> = model<Status>('Status', statusSchema);
+const StatusModel: Model<StatusInt> = model<StatusInt>('Status', statusSchema);
 
 export default StatusModel;

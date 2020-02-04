@@ -1,6 +1,5 @@
-import { Request, Response } from 'express';
 import { Result, ValidationError, validationResult } from 'express-validator';
-import mongoose, { MongooseDocument } from 'mongoose';
+import mongoose  from 'mongoose';
 import keys from '../../keys/keys';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -14,7 +13,7 @@ interface Auth {
 export class DbServices {
     public static async getData(Model): Promise<void> {
         try {
-            const data = await Model.find();
+            const data: any = await Model.find();
             return data;
         } catch (e) {
             console.log(e);

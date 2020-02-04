@@ -30,8 +30,8 @@ const roomSchema: Schema = new Schema(
             required: true,
         },
         image: {
-            data: Buffer,
-            contentType: String,
+            type: String,
+            required: true,
         },
         customerId: {
             type: Types.ObjectId,
@@ -47,7 +47,7 @@ const roomSchema: Schema = new Schema(
     },
 );
 
-interface Room extends Document {
+export interface RoomInt extends Document {
     category: string;
     userId: string;
     isBooked: boolean;
@@ -60,6 +60,6 @@ interface Room extends Document {
     image: string;
 }
 
-const RoomModel: Model<Room> = model<Room>('Room', roomSchema);
+const RoomModel: Model<RoomInt> = model<RoomInt>('Room', roomSchema);
 
 export default RoomModel;

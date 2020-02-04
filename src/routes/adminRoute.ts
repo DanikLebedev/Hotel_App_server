@@ -1,24 +1,27 @@
 import { Router, Request, Response } from 'express';
-import Category from '../models/category';
+import Category, { CategoryInt } from '../models/category';
 import { check, Result, validationResult } from 'express-validator';
 import { auth } from '../middleware/authMiddleware';
-import Room from '../models/room';
+import Room, { RoomInt } from '../models/room';
 import EmployeeModel, { EmployeeI } from '../models/employee';
-import StatusModel from '../models/status';
-import daoCategory from '../dao/daoCategory';
-import daoRoom from '../dao/daoRoom';
+import StatusModel, { StatusInt } from '../models/status';
+import daoCategory from '../controllers/category.contoller';
+import daoRoom from '../controllers/room.controller';
 import { DbServices } from '../db/dbServices';
-import daoEmployee from '../dao/daoEmployee';
-import daoStatus from '../dao/daoStatus';
-import daoCustomer from '../dao/daoCustomer';
+import daoEmployee from '../controllers/employee.controller';
+import daoStatus from '../controllers/status.controller';
+import daoCustomer from '../controllers/customer.controller';
 import CustomerModel from '../models/customer';
 
 const router: Router = Router();
 
-router.get('/customers', async (req: Request, res: Response, Model) => {
-    const customers = await daoCustomer.getAllCustomers(CustomerModel);
-    return res.json({ customers });
-});
+router.get(
+    '/customers',
+    async (req: Request, res: Response): Promise<Response> => {
+        const customers = await daoCustomer.getAllCustomers(CustomerModel);
+        return res.json({ customers });
+    },
+);
 
 router.post(
     '/login',
@@ -39,8 +42,14 @@ router.post(
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
         }
-        const categories: void = await daoCategory.postCategories(req.body, Category);
-        return res.status(201).json({ categories });
+        const candidate: CategoryInt | null = await Category.findOne({ title: req.body.title });
+        if (candidate) {
+            return res.status(400).json({
+                message: 'Тhis category is already created',
+            });
+        }
+        const categories: CategoryInt = await daoCategory.postCategories(req.body, Category);
+        return res.status(201).json({ message: 'Category was created', categories });
     },
 );
 
@@ -69,10 +78,10 @@ router.post(
     [
         check('category', 'Incorrect category title').isString(),
         check('title', 'Incorrect room title').isString(),
-        check('price', 'Incorrect room price').isNumeric(),
-        check('area', 'Incorrect room area').isNumeric(),
-        check('guests', 'Incorrect number of guests').isNumeric(),
-        check('rooms', 'Incorrect number of rooms').isNumeric(),
+        check('price', 'Incorrect room price').isInt(),
+        check('area', 'Incorrect room area').isInt(),
+        check('guests', 'Incorrect number of guests').isInt(),
+        check('rooms', 'Incorrect number of rooms').isInt(),
         check('description', 'Incorrect room description').isString(),
     ],
     async (req: Request, res: Response): Promise<Response> => {
@@ -81,8 +90,8 @@ router.post(
             return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
         }
         try {
-            await daoRoom.postRooms(req, Room);
-            return res.status(201).json({ message: 'Room was created' });
+            const rooms: RoomInt = await daoRoom.postRooms(req, Room);
+            return res.status(201).json({ rooms: rooms });
         } catch (e) {
             console.log(e);
             return res.status(500).json({ message: e });
@@ -128,8 +137,8 @@ router.post(
                     message: 'Тhis email is already used',
                 });
             }
-            await daoEmployee.postEmployees(req.body, EmployeeModel);
-            return res.status(201).json({ message: 'User was created' });
+            const employee: EmployeeI = await daoEmployee.postEmployees(req.body, EmployeeModel);
+            return res.status(201).json({ message: 'User was created', employee });
         } catch (e) {
             return res.json({ message: 'Incorrect data' });
         }
@@ -158,8 +167,8 @@ router.post(
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
         }
-        await daoStatus.postStatus(req.body, StatusModel);
-        return res.status(201).json({ message: 'status was created' });
+        const statuses: StatusInt = await daoStatus.postStatus(req.body, StatusModel);
+        return res.status(201).json({ message: 'status was created', statuses });
     },
 );
 router.get(

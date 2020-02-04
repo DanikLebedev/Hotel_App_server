@@ -4,7 +4,7 @@ import Customer from '../models/customer';
 import { DbServices } from '../db/dbServices';
 import { auth } from '../middleware/authMiddleware';
 import EmployeeModel, { EmployeeI } from '../models/employee';
-import daoCustomer from '../dao/daoCustomer';
+import daoCustomer from '../controllers/customer.controller';
 import keys from '../../keys/keys';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -41,8 +41,8 @@ router.post(
             req.body.password = await bcrypt.hash(req.body.password, 12);
         }
 
-        await daoCustomer.postCustomers(req.body, Customer);
-        return res.status(201).json({ message: 'User was created' });
+        const customers = await daoCustomer.postCustomers(req.body, Customer);
+        return res.status(201).json({ message: 'User was created', customers });
     },
 );
 
