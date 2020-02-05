@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import keys from '../../keys/keys';
-import daoCategory from '../controllers/category.contoller';
+import daoCategory from '../interlayers/category.interlayer';
 import CategoryModel from '../models/category';
 
 
@@ -32,9 +32,7 @@ describe('Category model testing', () => {
     });
 
     it('should return category validation error', async () => {
-        let err;
         const invalidCategory = await daoCategory.postCategories({ title: '' }, CategoryModel);
-        err = invalidCategory;
         expect(invalidCategory).toBeUndefined();
     });
 });

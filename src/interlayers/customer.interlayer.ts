@@ -1,10 +1,10 @@
 import { DbServices } from '../db/dbServices';
 
-export default class StatusController {
-    public static async getAllStatuses(Model) {
+export default class CustomerInterlayer {
+    public static async getAllCustomers(Model) {
         return await DbServices.getData(Model);
     }
-    public static async postStatus(body, Model) {
+    public static async postCustomers(body, Model) {
         return await DbServices.postData(body, Model);
     }
 }

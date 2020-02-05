@@ -9,8 +9,7 @@ export const auth = (req, res, next): Response | void => {
     const token: string = req.headers.authorization.split(' ')[1]; //
 
     if (!token) {
-        console.log('no token');
-        return res.redirect('/api/auth');
+        return res.json({ message: 'Need to authorize' });
     }
 
     const decoded: {} = jwt.verify(token, keys.jwtSecret);

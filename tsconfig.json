@@ -15,7 +15,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
-    "lib": ["dom","ES6","DOM.Iterable","ES7"]
+    "lib": ["dom","ES6","DOM.Iterable","ES7"],
+    "downlevelIteration": true
   },
   "include": [
     "**/src/**/*.ts",

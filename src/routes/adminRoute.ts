@@ -5,12 +5,12 @@ import { auth } from '../middleware/authMiddleware';
 import Room, { RoomInt } from '../models/room';
 import EmployeeModel, { EmployeeI } from '../models/employee';
 import StatusModel, { StatusInt } from '../models/status';
-import daoCategory from '../controllers/category.contoller';
-import daoRoom from '../controllers/room.controller';
+import daoCategory from '../interlayers/category.interlayer';
+import daoRoom from '../interlayers/room.interlayer';
 import { DbServices } from '../db/dbServices';
-import daoEmployee from '../controllers/employee.controller';
-import daoStatus from '../controllers/status.controller';
-import daoCustomer from '../controllers/customer.controller';
+import daoEmployee from '../interlayers/employee.interlayer';
+import daoStatus from '../interlayers/status.interlayer';
+import daoCustomer from '../interlayers/customer.interlayer';
 import CustomerModel from '../models/customer';
 
 const router: Router = Router();
@@ -77,12 +77,11 @@ router.post(
     '/room',
     [
         check('category', 'Incorrect category title').isString(),
-        check('title', 'Incorrect room title').isString(),
-        check('price', 'Incorrect room price').isInt(),
-        check('area', 'Incorrect room area').isInt(),
-        check('guests', 'Incorrect number of guests').isInt(),
-        check('rooms', 'Incorrect number of rooms').isInt(),
-        check('description', 'Incorrect room description').isString(),
+        check('price', 'Incorrect price').isInt(),
+        check('area', 'Incorrect area').isInt(),
+        check('guests', 'Incorrect number of guests').isInt({ min: 1 }),
+        check('rooms', 'Incorrect number of rooms').isInt({ min: 1 }),
+        check('description', 'Incorrect description').isString(),
     ],
     async (req: Request, res: Response): Promise<Response> => {
         const errors: Result = validationResult(req);
@@ -91,7 +90,7 @@ router.post(
         }
         try {
             const rooms: RoomInt = await daoRoom.postRooms(req, Room);
-            return res.status(201).json({ rooms: rooms });
+            return res.status(201).json({ message: 'Room was created', rooms: rooms });
         } catch (e) {
             console.log(e);
             return res.status(500).json({ message: e });

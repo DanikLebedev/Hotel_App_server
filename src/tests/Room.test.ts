@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import keys from '../../keys/keys';
-import daoRoom from '../controllers/room.controller';
+import daoRoom from '../interlayers/room.interlayer';
 import RoomModel from '../models/room';
 
 const roomData = {

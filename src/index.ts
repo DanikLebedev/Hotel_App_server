@@ -7,7 +7,7 @@ import authRoute from './routes/authRoute';
 import clientRoute from './routes/clientRoutes';
 import keys from '../keys/keys';
 import { DbServices } from './db/dbServices';
-import multer, {diskStorage} from 'multer';
+import multer from 'multer';
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {

@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express';
 import { auth } from '../middleware/authMiddleware';
-import { check, Result, ValidationError, validationResult } from 'express-validator';
+import { Result, validationResult } from 'express-validator';
 import OrderModel from '../models/order';
 import RoomModel from '../models/room';
-import daoRoom from '../controllers/room.controller';
-import daoOrder from '../controllers/order.controller';
+import daoRoom from '../interlayers/room.interlayer';
+import daoOrder from '../interlayers/order.interlayer';
 
 const router = Router();
 
@@ -18,7 +18,8 @@ router.get(
 
 router.post(
     '/order',
-    async (req: any, res: Response): Promise<Response> => {
+    auth,
+    async (req: Request, res: Response): Promise<Response> => {
         const errors: Result = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -42,7 +43,7 @@ router.post(
 
 router.get(
     '/order',
-    async (req: any, res: Response): Promise<Response> => {
+    async (req: Request, res: Response): Promise<Response> => {
         const orders = await OrderModel.find().populate('customerId');
         return res.json(orders);
     },

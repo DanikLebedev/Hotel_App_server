@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import keys from '../../keys/keys';
-import daoEmployee from '../controllers/employee.controller';
+import daoEmployee from '../interlayers/employee.interlayer';
 import EmployeeModel from '../models/employee';
 
 const employeeData = {

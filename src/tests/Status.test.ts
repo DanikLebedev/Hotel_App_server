@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import keys from '../../keys/keys';
-import daoStatus from '../controllers/status.controller';
+import daoStatus from '../interlayers/status.interlayer';
 import StatusModel from '../models/status';
 
 describe('All Models Testing', () => {

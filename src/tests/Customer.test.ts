@@ -1,6 +1,6 @@
 import keys from '../../keys/keys';
 import mongoose from 'mongoose';
-import daoCustomer from '../controllers/customer.controller';
+import daoCustomer from '../interlayers/customer.interlayer';
 import CustomerModel from '../models/customer';
 
 describe('All Models Testing', () => {

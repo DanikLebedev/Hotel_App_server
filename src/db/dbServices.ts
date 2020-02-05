@@ -49,21 +49,18 @@ export class DbServices {
 
         try {
             const postParams: Auth = { ...req.body };
-
             const user = await Model.findOne({ email: postParams.email });
-
+            console.log(postParams)
             if (!user) {
                 return res.status(400).json({ message: 'User not found' });
             }
-
             const isMatch: boolean = await bcrypt.compare(postParams.password, user.password);
-
             if (!isMatch) {
                 return res.status(400).json({ message: 'Incorrect password' });
             }
 
             const token: string = jwt.sign({ userId: user.id }, keys.jwtSecret, { expiresIn: '1h' });
-            return res.json({ token, userId: user.id });
+            return res.json({ token, userId: user.id, status: user.status });
         } catch (e) {
             console.log(e);
             return res.status(500).json({ message: e });

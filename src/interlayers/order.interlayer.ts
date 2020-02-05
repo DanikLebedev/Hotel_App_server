@@ -1,6 +1,6 @@
 import { DbServices } from '../db/dbServices';
 
-export default class OrderController {
+export default class OrderInterlayer {
     public static async getAllOrders(req, res, Model) {
         await DbServices.getData(Model);
     }
