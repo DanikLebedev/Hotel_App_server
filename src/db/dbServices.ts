@@ -11,7 +11,7 @@ interface Auth {
 }
 
 export class DbServices {
-    public static async getData(Model): Promise<void> {
+    public static async getData(Model): Promise<any> {
         try {
             const data: any = await Model.find();
             return data;
@@ -50,7 +50,6 @@ export class DbServices {
         try {
             const postParams: Auth = { ...req.body };
             const user = await Model.findOne({ email: postParams.email });
-            console.log(postParams)
             if (!user) {
                 return res.status(400).json({ message: 'User not found' });
             }

@@ -9,7 +9,7 @@ const customerSchema: Schema = new Schema({
         type: String,
         required: true,
     },
-    order: [{ type: Types.ObjectId, ref: 'Order', required: true }],
+    order: [{ type: Types.ObjectId, ref: 'Order'}],
 });
 
 interface Customer extends Document {

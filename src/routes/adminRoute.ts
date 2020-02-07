@@ -5,20 +5,22 @@ import { auth } from '../middleware/authMiddleware';
 import Room, { RoomInt } from '../models/room';
 import EmployeeModel, { EmployeeI } from '../models/employee';
 import StatusModel, { StatusInt } from '../models/status';
-import daoCategory from '../interlayers/category.interlayer';
-import daoRoom from '../interlayers/room.interlayer';
+import CategoryInterlayer from '../interlayers/category.interlayer';
+import RoomInterlayer from '../interlayers/room.interlayer';
 import { DbServices } from '../db/dbServices';
-import daoEmployee from '../interlayers/employee.interlayer';
-import daoStatus from '../interlayers/status.interlayer';
-import daoCustomer from '../interlayers/customer.interlayer';
+import EmployeeInterlayer from '../interlayers/employee.interlayer';
+import CustomerInterlayer from '../interlayers/customer.interlayer';
 import CustomerModel from '../models/customer';
+import StatusInterlayer from '../interlayers/status.interlayer';
+import OrderInterlayer from '../interlayers/order.interlayer';
+import OrderModel from '../models/order';
 
 const router: Router = Router();
 
 router.get(
     '/customers',
     async (req: Request, res: Response): Promise<Response> => {
-        const customers = await daoCustomer.getAllCustomers(CustomerModel);
+        const customers = await CustomerInterlayer.getAllCustomers(CustomerModel);
         return res.json({ customers });
     },
 );
@@ -48,7 +50,7 @@ router.post(
                 message: 'Тhis category is already created',
             });
         }
-        const categories: CategoryInt = await daoCategory.postCategories(req.body, Category);
+        const categories: CategoryInt = await CategoryInterlayer.postCategories(req.body, Category);
         return res.status(201).json({ message: 'Category was created', categories });
     },
 );
@@ -56,10 +58,18 @@ router.post(
 router.get(
     '/category',
     async (req: Request, res: Response): Promise<Response> => {
-        const categories: void = await daoCategory.getAllCategories(Category);
+        const categories: void = await CategoryInterlayer.getAllCategories(Category);
         return res.json({ categories });
     },
 );
+
+router.delete(
+    'category',
+    async (req: Request, res: Response): Promise<Response> => {
+        const categories: void = await CategoryInterlayer.getAllCategories(Category);
+        return res.json({ categories });
+    },
+)
 
 router.delete(
     '/category',
@@ -89,7 +99,7 @@ router.post(
             return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
         }
         try {
-            const rooms: RoomInt = await daoRoom.postRooms(req, Room);
+            const rooms: RoomInt = await RoomInterlayer.postRooms(req, Room);
             return res.status(201).json({ message: 'Room was created', rooms: rooms });
         } catch (e) {
             console.log(e);
@@ -101,7 +111,7 @@ router.post(
 router.get(
     '/room',
     async (req: Request, res: Response): Promise<Response> => {
-        const rooms: void = await daoRoom.getAllRoom(Room);
+        const rooms: void = await RoomInterlayer.getAllRoom(Room);
         return res.json({ rooms });
     },
 );
@@ -136,7 +146,7 @@ router.post(
                     message: 'Тhis email is already used',
                 });
             }
-            const employee: EmployeeI = await daoEmployee.postEmployees(req.body, EmployeeModel);
+            const employee: EmployeeI = await EmployeeInterlayer.postEmployees(req, EmployeeModel);
             return res.status(201).json({ message: 'User was created', employee });
         } catch (e) {
             return res.json({ message: 'Incorrect data' });
@@ -147,7 +157,7 @@ router.post(
 router.get(
     '/employee',
     async (req: Request, res: Response): Promise<Response> => {
-        const employee = await daoEmployee.getAllEmployees(EmployeeModel);
+        const employee = await EmployeeInterlayer.getAllEmployees(EmployeeModel);
         return res.json({ employee });
     },
 );
@@ -166,15 +176,23 @@ router.post(
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
         }
-        const statuses: StatusInt = await daoStatus.postStatus(req.body, StatusModel);
+        const statuses: StatusInt = await StatusInterlayer.postStatus(req.body, StatusModel);
         return res.status(201).json({ message: 'status was created', statuses });
     },
 );
 router.get(
     '/status',
     async (req: Request, res: Response): Promise<Response> => {
-        const statuses = await daoStatus.getAllStatuses(StatusModel);
+        const statuses = await StatusInterlayer.getAllStatuses(StatusModel);
         return res.json({ statuses });
+    },
+);
+
+router.get(
+    '/orders',
+    async (req: Request, res: Response): Promise<Response> => {
+        const orders = await OrderInterlayer.getAllOrders(OrderModel);
+        return res.json({ orders });
     },
 );
 

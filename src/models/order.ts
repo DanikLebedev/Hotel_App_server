@@ -1,7 +1,7 @@
 import { Schema, model, Types, Model, Document } from 'mongoose';
 
 const orderSchema: Schema = new Schema({
-    customerId: {
+    owner: {
         type: Types.ObjectId,
         ref: 'Customer',
     },
