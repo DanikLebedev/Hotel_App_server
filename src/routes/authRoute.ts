@@ -2,8 +2,6 @@ import { Router, Request, Response } from 'express';
 import { check, Result, validationResult } from 'express-validator';
 import Customer from '../models/customer';
 import { DbServices } from '../db/dbServices';
-import { auth } from '../middleware/authMiddleware';
-import EmployeeModel, { EmployeeI } from '../models/employee';
 import daoCustomer from '../interlayers/customer.interlayer';
 import bcrypt from 'bcryptjs';
 
@@ -38,7 +36,7 @@ router.post(
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, 12);
         }
-        const customers = await daoCustomer.postCustomers(req.body, Customer);
+        const customers: CustomerInt = await daoCustomer.postCustomers(req.body, Customer);
         return res.status(201).json({ message: 'User was created', customers });
     },
 );

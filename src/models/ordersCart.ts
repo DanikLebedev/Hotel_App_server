@@ -1,5 +1,4 @@
 import { Schema, model, Types, Model, Document } from 'mongoose';
-import { Order } from './order';
 
 const ordersCartSchema: Schema = new Schema({
     status: {

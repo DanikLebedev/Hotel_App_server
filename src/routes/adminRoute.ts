@@ -13,14 +13,16 @@ import CustomerInterlayer from '../interlayers/customer.interlayer';
 import CustomerModel from '../models/customer';
 import StatusInterlayer from '../interlayers/status.interlayer';
 import OrderInterlayer from '../interlayers/order.interlayer';
-import OrderModel from '../models/order';
+import OrderModel, { Order } from '../models/order';
+import { Customer } from '../models/customer';
+
 
 const router: Router = Router();
 
 router.get(
     '/customers',
     async (req: Request, res: Response): Promise<Response> => {
-        const customers = await CustomerInterlayer.getAllCustomers(CustomerModel);
+        const customers: Customer[] = await CustomerInterlayer.getAllCustomers(CustomerModel);
         return res.json({ customers });
     },
 );
@@ -58,7 +60,7 @@ router.post(
 router.get(
     '/category',
     async (req: Request, res: Response): Promise<Response> => {
-        const categories: void = await CategoryInterlayer.getAllCategories(Category);
+        const categories: CategoryInt[] = await CategoryInterlayer.getAllCategories(Category);
         return res.json({ categories });
     },
 );
@@ -66,11 +68,10 @@ router.get(
 router.delete(
     'category',
     async (req: Request, res: Response): Promise<Response> => {
-        const categories: void = await CategoryInterlayer.getAllCategories(Category);
+        const categories: CategoryInt[] = await CategoryInterlayer.getAllCategories(Category);
         return res.json({ categories });
     },
-)
-
+);
 
 router.post(
     '/room',
@@ -100,7 +101,7 @@ router.post(
 router.get(
     '/room',
     async (req: Request, res: Response): Promise<Response> => {
-        const rooms: void = await RoomInterlayer.getAllRoom(Room);
+        const rooms: RoomInt[] = await RoomInterlayer.getAllRoom(Room);
         return res.json({ rooms });
     },
 );
@@ -146,13 +147,13 @@ router.post(
 router.get(
     '/employee',
     async (req: Request, res: Response): Promise<Response> => {
-        const employee = await EmployeeInterlayer.getAllEmployees(EmployeeModel);
+        const employee: EmployeeI[] = await EmployeeInterlayer.getAllEmployees(EmployeeModel);
         return res.json({ employee });
     },
 );
 
 router.delete(
-    '/employee/:id',
+    '/employee/delete',
     async (req: Request, res: Response): Promise<void> => {
         const employee = await EmployeeModel.findByIdAndRemove(req.params.id);
     },
@@ -172,7 +173,7 @@ router.post(
 router.get(
     '/status',
     async (req: Request, res: Response): Promise<Response> => {
-        const statuses = await StatusInterlayer.getAllStatuses(StatusModel);
+        const statuses: StatusInt[] = await StatusInterlayer.getAllStatuses(StatusModel);
         return res.json({ statuses });
     },
 );
@@ -180,7 +181,7 @@ router.get(
 router.get(
     '/orders',
     async (req: Request, res: Response): Promise<Response> => {
-        const orders = await OrderInterlayer.getAllOrders(OrderModel);
+        const orders: Order[] = await OrderInterlayer.getAllOrders(OrderModel);
         return res.json({ orders });
     },
 );

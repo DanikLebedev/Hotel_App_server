@@ -12,7 +12,7 @@ const customerSchema: Schema = new Schema({
     order: [{ type: Types.ObjectId, ref: 'Order'}],
 });
 
-interface Customer extends Document {
+export interface Customer extends Document {
     email: string;
     password: string;
 }

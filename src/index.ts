@@ -45,7 +45,8 @@ app.use(function(req, res, next, err): void {
     return res.status(404).json({ message: 'Path not found' });
 });
 
-app.use(function(err, req, res, next): void {
+app.use(function(req, res, _next, err): void {
+    console.log(err)
     return res.status(500).json({ message: 'Something went wrong...' });
 });
 

@@ -2,10 +2,11 @@ import { Router, Request, Response, RequestHandler } from 'express';
 import { auth } from '../middleware/authMiddleware';
 import { Result, validationResult } from 'express-validator';
 import OrderModel, { Order } from '../models/order';
-import RoomModel from '../models/room';
+import RoomModel, { RoomInt } from '../models/room';
 import daoRoom from '../interlayers/room.interlayer';
 import daoOrder from '../interlayers/order.interlayer';
 import OrderCartModel, { OrderCart } from '../models/ordersCart';
+import OrderInterlayer from '../interlayers/order.interlayer';
 
 const router = Router();
 
@@ -61,23 +62,20 @@ router.post(
 
 router.delete(
     '/order/delete',
-    async (req: any, res: Response): Promise<void> => {
-        const userOrder: Order | null = await OrderModel.findByIdAndRemove(req.body._id);
-        console.log(userOrder)
+    async (req: Request, res: Response): Promise<any> => {
+        const userOrder: Order | null = await OrderInterlayer.deleteOrder(req.body, OrderModel);
         if (userOrder) {
-            const orderCartItem = await OrderCartModel.findOneAndUpdate(
-                { orderId: userOrder._id },
-                { status: 'canceled' },
-            );
-            const rooms = await RoomModel.find();
-            const filteredRooms = rooms.filter(item => {
-                return item.isBooked !== false && item.category === userOrder.category;
+            await OrderCartModel.findOneAndUpdate({ orderId: userOrder._id }, { status: 'canceled' });
+            const rooms: RoomInt[] = await RoomModel.find();
+            const filteredRooms: RoomInt[] = rooms.filter(item => {
+                return item.isBooked && item.category === userOrder.category;
             });
             if (filteredRooms.length === 0) {
-                return;
+                return res.json({ message: 'Order was deleted' });
             } else {
-                const updateBookedRoomId = filteredRooms[0]._id;
+                const updateBookedRoomId: string = filteredRooms[0]._id;
                 await RoomModel.findByIdAndUpdate(updateBookedRoomId, { isBooked: false }, { new: true });
+                return res.json({ message: 'Order was deleted' });
             }
         }
     },
@@ -86,8 +84,8 @@ router.delete(
 router.get(
     '/order',
     auth,
-    async (req: any, res: Response): Promise<any> => {
-        const orders = await OrderModel.find({ owner: req.user.userId });
+    async (req: any, res: Response): Promise<Response> => {
+        const orders: Order[] = await OrderModel.find({ owner: req.user.userId });
         return res.json({ orders });
     },
 );

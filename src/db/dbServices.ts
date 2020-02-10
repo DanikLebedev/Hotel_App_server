@@ -1,5 +1,5 @@
 import { Result, ValidationError, validationResult } from 'express-validator';
-import mongoose  from 'mongoose';
+import mongoose, {Model} from 'mongoose';
 import keys from '../../keys/keys';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -65,5 +65,8 @@ export class DbServices {
             return res.status(500).json({ message: e });
         }
     }
-    public static async deleteItem(req, res, Model, param) {}
+    public static async deleteData(body, Model: Model<any>): Promise<any> {
+        const data = await Model.findByIdAndRemove(body._id);
+        return data
+    }
 }

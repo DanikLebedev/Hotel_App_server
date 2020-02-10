@@ -1,7 +1,8 @@
 import { DbServices } from '../db/dbServices';
+import {RoomInt} from "../models/room";
 
 export default class RoomInterlayer {
-    public static async getAllRoom(Model) {
+    public static async getAllRoom(Model): Promise<RoomInt[]> {
         return await DbServices.getData(Model);
     }
     public static async postRooms(req, Model) {
