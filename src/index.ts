@@ -42,11 +42,11 @@ app.use('/api/admin', adminRoute);
 app.use('/api/client', clientRoute);
 
 app.use(function(req, res, next, err): void {
-    return res.status(404).send({ error: err });
+    return res.status(404).json({ message: 'Path not found' });
 });
 
 app.use(function(err, req, res, next): void {
-    return res.status(500).send({ error: err });
+    return res.status(500).json({ message: 'Something went wrong...' });
 });
 
 const PORT: number = keys.PORT || 5000;

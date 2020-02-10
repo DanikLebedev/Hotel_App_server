@@ -21,14 +21,18 @@ const orderSchema: Schema = new Schema({
         type: Number,
         required: true,
     },
+    status: {
+        type: String,
+        default: 'booked',
+    },
 });
 
-interface Order extends Document {
-    customerId: string;
+export interface Order extends Document {
     category: string;
     checkIn: Date;
     checkOut: Date;
     guests: number;
+    status: string;
 }
 
 const OrderModel: Model<Order> = model<Order>('Order', orderSchema);

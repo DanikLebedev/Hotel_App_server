@@ -1,4 +1,4 @@
-import { Schema, model, Types, Model, Document } from 'mongoose';
+import { Schema, model, Model, Document } from 'mongoose';
 
 const employeeSchema: Schema = new Schema({
     email: {
@@ -11,7 +11,7 @@ const employeeSchema: Schema = new Schema({
     },
     status: {
         type: String,
-        required: true
+        required: true,
     },
 });
 

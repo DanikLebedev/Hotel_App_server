@@ -71,17 +71,6 @@ router.delete(
     },
 )
 
-router.delete(
-    '/category',
-    async (req: Request, res: Response): Promise<void> => {
-        try {
-            const categories = await Category.findOneAndDelete({ title: req.body.title });
-            res.json(categories);
-        } catch (e) {
-            console.log(e);
-        }
-    },
-);
 
 router.post(
     '/room',

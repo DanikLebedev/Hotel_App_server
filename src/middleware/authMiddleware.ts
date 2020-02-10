@@ -2,19 +2,21 @@ import jwt from 'jsonwebtoken';
 import keys from '../../keys/keys';
 
 export const auth = (req, res, next): Response | void => {
+    if (req.method === 'OPTIONS') {
+        return next();
+    }
+
     try {
-        if (req.method === 'OPTIONS') {
-            return next();
-        }
-        const token: string = req.headers.authorization.split(' ')[1];
+        const token = req.headers.authorization.split(' ')[1]; // "Bearer TOKEN"
+
         if (!token) {
-            return res.json({ message: 'Need to authorize' });
+            return res.status(401).json({ message: 'Need to authorize' });
         }
 
-        const decoded: {} = jwt.verify(token, keys.jwtSecret);
+        const decoded = jwt.verify(token, keys.jwtSecret);
         req.user = decoded;
         next();
     } catch (e) {
-        console.log(e);
+        res.status(401).json({ message: 'Need to authorize' });
     }
 };
