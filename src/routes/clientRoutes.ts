@@ -48,6 +48,7 @@ router.post(
                         category: order.category,
                         checkIn: order.checkIn,
                         checkOut: order.checkOut,
+                        price: order.price,
                     });
                     await orderCartItem.save();
                 });

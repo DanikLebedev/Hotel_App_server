@@ -8,6 +8,10 @@ import clientRoute from './routes/clientRoutes';
 import keys from '../keys/keys';
 import { DbServices } from './db/dbServices';
 import multer from 'multer';
+import OrderInterlayer from './interlayers/order.interlayer';
+import OrderModel, { Order } from './models/order';
+import cron from 'node-cron';
+import OrderCartModel, { OrderCart } from './models/ordersCart';
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -35,6 +39,20 @@ app.use(
     }),
 );
 
+cron.schedule('30 * * * *', async function(): Promise<void> {
+    const allOrders: OrderCart[] = await OrderCartModel.find();
+    const today: number = new Date(Date.now()).getTime();
+    allOrders.map(async order => {
+        const checkOutDate: number = new Date(order.checkOut).getTime();
+        if (checkOutDate < today) {
+            order.status = 'completed';
+            await OrderCartModel.findByIdAndUpdate(order._id, { status: 'completed' });
+        } else {
+            return;
+        }
+    });
+});
+
 app.use('/static', express.static(path.resolve('uploads')));
 
 app.use('/api/auth', authRoute);
@@ -46,7 +64,7 @@ app.use(function(req, res, next, err): void {
 });
 
 app.use(function(req, res, _next, err): void {
-    console.log(err)
+    console.log(err);
     return res.status(500).json({ message: 'Something went wrong...' });
 });
 

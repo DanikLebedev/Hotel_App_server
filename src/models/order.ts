@@ -25,6 +25,7 @@ const orderSchema: Schema = new Schema({
         type: String,
         default: 'booked',
     },
+    price: Number
 });
 
 export interface Order extends Document {
@@ -33,6 +34,7 @@ export interface Order extends Document {
     checkOut: Date;
     guests: number;
     status: string;
+    price: number;
 }
 
 const OrderModel: Model<Order> = model<Order>('Order', orderSchema);
