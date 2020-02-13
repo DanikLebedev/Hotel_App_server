@@ -13,4 +13,9 @@ export default class OrderInterlayer {
     public static async deleteOrder(body, Model) {
         return await DbServices.deleteData(body, Model);
     }
+
+    public static async getOneOrder(req, Model): Promise<Order[]> {
+        const param = { owner: req.user.userId };
+        return await DbServices.getDataByParam(param, Model);
+    }
 }

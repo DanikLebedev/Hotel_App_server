@@ -9,12 +9,23 @@ const customerSchema: Schema = new Schema({
         type: String,
         required: true,
     },
-    order: [{ type: Types.ObjectId, ref: 'Order'}],
+    name: {
+        type: String,
+        required: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
+    },
+    order: [{ type: Types.ObjectId, ref: 'Order' }],
 });
 
 export interface Customer extends Document {
     email: string;
     password: string;
+    name: string;
+    lastName: string;
+    order: [];
 }
 
 const CustomerModel: Model<Customer> = model<Customer>('Customer', customerSchema);

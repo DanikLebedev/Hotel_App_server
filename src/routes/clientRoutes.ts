@@ -5,8 +5,9 @@ import OrderModel, { Order } from '../models/order';
 import RoomModel, { RoomInt } from '../models/room';
 import daoRoom from '../interlayers/room.interlayer';
 import daoOrder from '../interlayers/order.interlayer';
-import OrderCartModel, { OrderCart } from '../models/ordersCart';
+import OrderCartModel from '../models/ordersCart';
 import OrderInterlayer from '../interlayers/order.interlayer';
+import RoomInterlayer from '../interlayers/room.interlayer';
 
 const router = Router();
 
@@ -86,8 +87,16 @@ router.get(
     '/order',
     auth,
     async (req: any, res: Response): Promise<Response> => {
-        const orders: Order[] = await OrderModel.find({ owner: req.user.userId });
+        const orders: Order[] = await OrderInterlayer.getOneOrder(req, OrderModel);
         return res.json({ orders });
+    },
+);
+
+router.get(
+    '/rooms/:id',
+    async (req: Request, res: Response): Promise<Response> => {
+        const rooms: RoomInt[] | null = await RoomInterlayer.getOneRoom(req, RoomModel);
+        return res.json({ rooms });
     },
 );
 

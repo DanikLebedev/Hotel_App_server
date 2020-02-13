@@ -20,6 +20,8 @@ router.post(
     [
         check('email', 'Incorrect email').isEmail(),
         check('password', "Minimal password's length is 6").isLength({ min: 6 }),
+        check('name', 'Incorrect name').isString(),
+        check('lastName', 'Incorrect last name').isString(),
     ],
     async (req: CustomRequest<CustomerInt>, res: Response): Promise<Response> => {
         const errors: Result = validationResult(req);

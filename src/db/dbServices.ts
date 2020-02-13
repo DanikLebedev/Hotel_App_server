@@ -1,5 +1,5 @@
 import { Result, ValidationError, validationResult } from 'express-validator';
-import mongoose, {Model} from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import keys from '../../keys/keys';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -20,6 +20,11 @@ export class DbServices {
         }
     }
 
+    public static async getDataByParam(param, Model): Promise<any> {
+        const data: any = await Model.find(param);
+        return data;
+    }
+
     public static async postData(body, Model): Promise<any> {
         try {
             const postParams: {} = { ...body };
@@ -31,6 +36,11 @@ export class DbServices {
         } catch (e) {
             console.log(e);
         }
+    }
+
+    public static async getDataById(id, Model): Promise<any> {
+        const data = await Model.findById(id);
+        return data;
     }
 
     public static async connectToMongo(): Promise<void> {
@@ -59,7 +69,7 @@ export class DbServices {
             }
 
             const token: string = jwt.sign({ userId: user.id }, keys.jwtSecret, { expiresIn: '1h' });
-            return res.json({ token, userId: user.id, status: user.status });
+            return res.json({ token, userId: user.id, status: user.status, email: user.email });
         } catch (e) {
             console.log(e);
             return res.status(500).json({ message: e });
@@ -67,6 +77,6 @@ export class DbServices {
     }
     public static async deleteData(body, Model: Model<any>): Promise<any> {
         const data = await Model.findByIdAndRemove(body._id);
-        return data
+        return data;
     }
 }
