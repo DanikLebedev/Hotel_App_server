@@ -17,6 +17,7 @@ const ordersCartSchema: Schema = new Schema({
         type: Date,
         required: true,
     },
+    userEmail: String
 });
 
 export interface OrderCart extends Document {
@@ -25,6 +26,7 @@ export interface OrderCart extends Document {
     category: string;
     checkIn: string;
     checkOut: string;
+    userEmail: string;
 }
 
 const OrderCartModel: Model<OrderCart> = model<OrderCart>('OrderCart', ordersCartSchema);

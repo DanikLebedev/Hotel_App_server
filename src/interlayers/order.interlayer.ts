@@ -1,8 +1,9 @@
 import { DbServices } from '../db/dbServices';
 import { Order } from '../models/order';
+import {OrderCart} from "../models/ordersCart";
 
 export default class OrderInterlayer {
-    public static async getAllOrders(Model): Promise<Order[]> {
+    public static async getAllOrders(Model): Promise<OrderCart[]> {
         return await DbServices.getData(Model);
     }
     public static async postOrders(req, Model) {

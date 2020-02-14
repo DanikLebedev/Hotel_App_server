@@ -50,6 +50,7 @@ router.post(
                         checkIn: order.checkIn,
                         checkOut: order.checkOut,
                         price: order.price,
+                        userEmail: order.userEmail,
                     });
                     await orderCartItem.save();
                 });
@@ -96,7 +97,7 @@ router.get(
     '/rooms/:id',
     async (req: Request, res: Response): Promise<Response> => {
         const rooms: RoomInt[] | null = await RoomInterlayer.getOneRoom(req, RoomModel);
-        return res.json({ rooms });
+        return res.json( {rooms} );
     },
 );
 

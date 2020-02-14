@@ -15,7 +15,8 @@ import StatusInterlayer from '../interlayers/status.interlayer';
 import OrderInterlayer from '../interlayers/order.interlayer';
 import OrderModel, { Order } from '../models/order';
 import { Customer } from '../models/customer';
-
+import OrderCartModel, { OrderCart } from '../models/ordersCart';
+import CategoryModel from '../models/category';
 
 const router: Router = Router();
 
@@ -42,6 +43,7 @@ router.post(
     '/category',
     check('title', 'Incorrect title').isString(),
     async (req: Request, res: Response): Promise<Response> => {
+        console.log(req.body);
         const errors: Result = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
@@ -66,10 +68,10 @@ router.get(
 );
 
 router.delete(
-    'category',
+    '/category/delete',
     async (req: Request, res: Response): Promise<Response> => {
-        const categories: CategoryInt[] = await CategoryInterlayer.getAllCategories(Category);
-        return res.json({ categories });
+        const category: CategoryInt = await CategoryInterlayer.deleteCategories(req.body, Category);
+        return res.json(category);
     },
 );
 
@@ -98,6 +100,14 @@ router.post(
     },
 );
 
+router.put(
+    '/category/update',
+    async (req: Request, res: Response): Promise<Response> => {
+        const category: CategoryInt | null = await CategoryModel.findByIdAndUpdate(req.body._id, req.body);
+        return res.json({ category });
+    },
+);
+
 router.get(
     '/room',
     async (req: Request, res: Response): Promise<Response> => {
@@ -107,14 +117,10 @@ router.get(
 );
 
 router.delete(
-    '/room',
-    async (req: Request, res: Response): Promise<void> => {
-        try {
-            const rooms = await Room.findByIdAndRemove(req.params.id);
-            res.json(rooms);
-        } catch (e) {
-            console.log(e);
-        }
+    '/room/delete',
+    async (req: Request, res: Response): Promise<Response> => {
+        const rooms = await Room.findByIdAndRemove(req.body._id);
+        return res.json(rooms);
     },
 );
 
@@ -180,9 +186,17 @@ router.get(
 
 router.get(
     '/orders',
-    async (req: Request, res: Response): Promise<Response> => {
-        const orders: Order[] = await OrderInterlayer.getAllOrders(OrderModel);
+    async (req: Request, res: Response): Promise<any> => {
+        const orders: OrderCart[] = await OrderCartModel.find();
         return res.json({ orders });
+    },
+);
+
+router.delete(
+    '/orders/delete',
+    async (req: Request, res: Response): Promise<Response> => {
+        const orders = await OrderCartModel.findByIdAndRemove(req.body._id);
+        return res.json(orders);
     },
 );
 

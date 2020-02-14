@@ -27,16 +27,21 @@ const orderSchema: Schema = new Schema({
     },
     price: Number,
     comment: String,
+    userEmail: {
+        type: String,
+    },
 });
 
 export interface Order extends Document {
+    owner: string;
     category: string;
     checkIn: Date;
     checkOut: Date;
     guests: number;
     status: string;
     price: number;
-    comment: string
+    comment: string;
+    userEmail: string;
 }
 
 const OrderModel: Model<Order> = model<Order>('Order', orderSchema);
