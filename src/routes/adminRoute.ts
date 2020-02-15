@@ -17,6 +17,7 @@ import OrderModel, { Order } from '../models/order';
 import { Customer } from '../models/customer';
 import OrderCartModel, { OrderCart } from '../models/ordersCart';
 import CategoryModel from '../models/category';
+import {Model} from "mongoose";
 
 const router: Router = Router();
 
@@ -75,6 +76,14 @@ router.delete(
     },
 );
 
+router.put(
+    '/category/update',
+    async (req: Request, res: Response): Promise<Response> => {
+        const category: CategoryInt | null = await CategoryInterlayer.updateCategories(req.body, Category);
+        return res.json(category);
+    },
+);
+
 router.post(
     '/room',
     [
@@ -100,14 +109,6 @@ router.post(
     },
 );
 
-router.put(
-    '/category/update',
-    async (req: Request, res: Response): Promise<Response> => {
-        const category: CategoryInt | null = await CategoryModel.findByIdAndUpdate(req.body._id, req.body);
-        return res.json({ category });
-    },
-);
-
 router.get(
     '/room',
     async (req: Request, res: Response): Promise<Response> => {
@@ -119,7 +120,15 @@ router.get(
 router.delete(
     '/room/delete',
     async (req: Request, res: Response): Promise<Response> => {
-        const rooms = await Room.findByIdAndRemove(req.body._id);
+        const room: RoomInt | null = await RoomInterlayer.deleteRoom(req.body, Room);
+        return res.json(room);
+    },
+);
+
+router.put(
+    '/room/update',
+    async (req: Request, res: Response): Promise<Response> => {
+        const rooms = await RoomInterlayer.updateRoom(req.body, Model);
         return res.json(rooms);
     },
 );
@@ -153,15 +162,25 @@ router.post(
 router.get(
     '/employee',
     async (req: Request, res: Response): Promise<Response> => {
-        const employee: EmployeeI[] = await EmployeeInterlayer.getAllEmployees(EmployeeModel);
-        return res.json({ employee });
+        const employees: EmployeeI[] = await EmployeeInterlayer.getAllEmployees(EmployeeModel);
+        return res.json({ employees });
     },
 );
 
 router.delete(
     '/employee/delete',
-    async (req: Request, res: Response): Promise<void> => {
-        const employee = await EmployeeModel.findByIdAndRemove(req.params.id);
+    async (req: Request, res: Response): Promise<Response> => {
+        const employee = await EmployeeModel.findByIdAndRemove(req.body._id);
+        return res.json(employee);
+    },
+);
+
+router.put(
+    '/employee/update',
+    async (req: Request, res: Response): Promise<Response> => {
+        console.log(req.body);
+        const employee = await EmployeeModel.findOneAndUpdate({ _id: req.body._id }, req.body);
+        return res.json(employee);
     },
 );
 

@@ -1,5 +1,6 @@
 import { DbServices } from '../db/dbServices';
 import { RoomInt } from '../models/room';
+import { CategoryInt } from '../models/category';
 
 export default class RoomInterlayer {
     public static async getAllRoom(Model): Promise<RoomInt[]> {
@@ -12,5 +13,13 @@ export default class RoomInterlayer {
 
     public static async getOneRoom(req, Model): Promise<RoomInt[]> {
         return await DbServices.getDataByParam({ _id: req.params.id }, Model);
+    }
+
+    public static async deleteRoom(body, Model): Promise<RoomInt> {
+        return await DbServices.deleteData(body, Model);
+    }
+
+    public static async updateRoom(body, Model): Promise<RoomInt> {
+        return await DbServices.updateData(body, Model);
     }
 }

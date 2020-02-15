@@ -12,4 +12,8 @@ export default class CategoryInterlayer {
     public static async deleteCategories(body, Model): Promise<CategoryInt> {
         return await DbServices.deleteData(body, Model);
     }
+
+    public static async updateCategories(body, Model): Promise<CategoryInt> {
+        return await DbServices.updateData(body, Model);
+    }
 }

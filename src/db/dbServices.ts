@@ -20,6 +20,11 @@ export class DbServices {
         }
     }
 
+    public static async updateData(params, Model): Promise<any> {
+        const data: any = await Model.findOneAndUpdate({ _id: params._id }, params);
+        return data;
+    }
+
     public static async getDataByParam(param, Model): Promise<any> {
         const data: any = await Model.find(param);
         return data;
