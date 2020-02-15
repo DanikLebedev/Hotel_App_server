@@ -5,7 +5,7 @@ export default class CategoryInterlayer {
     public static async getAllCategories(Model): Promise<CategoryInt[]> {
         return await DbServices.getData(Model);
     }
-    public static async postCategories(body, Model): Promise<any> {
+    public static async postCategories(body, Model): Promise<CategoryInt> {
         return await DbServices.postData(body, Model);
     }
 

@@ -1,6 +1,6 @@
 import { DbServices } from '../db/dbServices';
 import { Order } from '../models/order';
-import {OrderCart} from "../models/ordersCart";
+import { OrderCart } from '../models/ordersCart';
 
 export default class OrderInterlayer {
     public static async getAllOrders(Model): Promise<OrderCart[]> {
@@ -19,4 +19,5 @@ export default class OrderInterlayer {
         const param = { owner: req.user.userId };
         return await DbServices.getDataByParam(param, Model);
     }
+
 }

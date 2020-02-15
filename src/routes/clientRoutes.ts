@@ -1,4 +1,4 @@
-import { Router, Request, Response, RequestHandler } from 'express';
+import { Router, Request, Response } from 'express';
 import { auth } from '../middleware/authMiddleware';
 import { Result, validationResult } from 'express-validator';
 import OrderModel, { Order } from '../models/order';
@@ -14,7 +14,7 @@ const router = Router();
 router.get(
     '/rooms',
     async (req: Request, res: Response): Promise<Response> => {
-        const rooms = await daoRoom.getAllRoom(RoomModel);
+        const rooms: RoomInt[] = await daoRoom.getAllRoom(RoomModel);
         return res.json({ rooms });
     },
 );
@@ -29,17 +29,17 @@ router.post(
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
             }
-            const rooms = await RoomModel.find();
-            const filteredRooms = rooms.filter(item => {
-                return item.isBooked !== true && item.category === req.body.category;
+            const rooms: RoomInt[] = await RoomModel.find();
+            const filteredRooms: RoomInt[] = rooms.filter(item => {
+                return !item.isBooked && item.category === req.body.category;
             });
             if (filteredRooms.length === 0) {
                 return res.status(400).json({ message: 'All rooms are booked' });
             } else {
-                const notBookedRoomId = filteredRooms[0]._id;
+                const notBookedRoomId: string = filteredRooms[0]._id;
                 await RoomModel.findByIdAndUpdate(notBookedRoomId, { isBooked: true }, { new: true });
             }
-            const orders = await daoOrder.postOrders(req, OrderModel);
+            const orders: Order = await daoOrder.postOrders(req, OrderModel);
             const userOrder: Order[] | null = await OrderModel.find({ owner: req.user.userId });
             if (userOrder) {
                 userOrder.map(async order => {
@@ -97,7 +97,7 @@ router.get(
     '/rooms/:id',
     async (req: Request, res: Response): Promise<Response> => {
         const rooms: RoomInt[] | null = await RoomInterlayer.getOneRoom(req, RoomModel);
-        return res.json( {rooms} );
+        return res.json({ rooms });
     },
 );
 

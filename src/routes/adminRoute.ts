@@ -12,17 +12,15 @@ import EmployeeInterlayer from '../interlayers/employee.interlayer';
 import CustomerInterlayer from '../interlayers/customer.interlayer';
 import CustomerModel from '../models/customer';
 import StatusInterlayer from '../interlayers/status.interlayer';
-import OrderInterlayer from '../interlayers/order.interlayer';
-import OrderModel, { Order } from '../models/order';
 import { Customer } from '../models/customer';
 import OrderCartModel, { OrderCart } from '../models/ordersCart';
-import CategoryModel from '../models/category';
-import {Model} from "mongoose";
+import OrderInterlayer from '../interlayers/order.interlayer';
 
 const router: Router = Router();
 
 router.get(
     '/customers',
+    auth,
     async (req: Request, res: Response): Promise<Response> => {
         const customers: Customer[] = await CustomerInterlayer.getAllCustomers(CustomerModel);
         return res.json({ customers });
@@ -44,7 +42,6 @@ router.post(
     '/category',
     check('title', 'Incorrect title').isString(),
     async (req: Request, res: Response): Promise<Response> => {
-        console.log(req.body);
         const errors: Result = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
@@ -72,7 +69,8 @@ router.delete(
     '/category/delete',
     async (req: Request, res: Response): Promise<Response> => {
         const category: CategoryInt = await CategoryInterlayer.deleteCategories(req.body, Category);
-        return res.json(category);
+
+        return res.json({ message: 'Category was deleted', category });
     },
 );
 
@@ -80,7 +78,7 @@ router.put(
     '/category/update',
     async (req: Request, res: Response): Promise<Response> => {
         const category: CategoryInt | null = await CategoryInterlayer.updateCategories(req.body, Category);
-        return res.json(category);
+        return res.json({ category, message: 'Category was updated' });
     },
 );
 
@@ -121,15 +119,15 @@ router.delete(
     '/room/delete',
     async (req: Request, res: Response): Promise<Response> => {
         const room: RoomInt | null = await RoomInterlayer.deleteRoom(req.body, Room);
-        return res.json(room);
+        return res.json({ room, message: 'Room was deleted' });
     },
 );
 
 router.put(
     '/room/update',
     async (req: Request, res: Response): Promise<Response> => {
-        const rooms = await RoomInterlayer.updateRoom(req.body, Model);
-        return res.json(rooms);
+        const rooms: RoomInt | null = await RoomInterlayer.updateRoom(req.body, Room);
+        return res.json({ rooms, message: 'Room was updated' });
     },
 );
 
@@ -170,17 +168,16 @@ router.get(
 router.delete(
     '/employee/delete',
     async (req: Request, res: Response): Promise<Response> => {
-        const employee = await EmployeeModel.findByIdAndRemove(req.body._id);
-        return res.json(employee);
+        const employee: EmployeeI | null = await EmployeeInterlayer.deleteEmployee(req.body, EmployeeModel);
+        return res.json({ employee, message: 'Employee was deleted' });
     },
 );
 
 router.put(
     '/employee/update',
     async (req: Request, res: Response): Promise<Response> => {
-        console.log(req.body);
-        const employee = await EmployeeModel.findOneAndUpdate({ _id: req.body._id }, req.body);
-        return res.json(employee);
+        const employee: EmployeeI | null = await EmployeeInterlayer.updateEmployee(req.body, EmployeeModel);
+        return res.json({ employee, message: 'Employee was updated' });
     },
 );
 
@@ -206,7 +203,7 @@ router.get(
 router.get(
     '/orders',
     async (req: Request, res: Response): Promise<any> => {
-        const orders: OrderCart[] = await OrderCartModel.find();
+        const orders: OrderCart[] = await OrderInterlayer.getAllOrders(OrderCartModel);
         return res.json({ orders });
     },
 );
@@ -214,8 +211,8 @@ router.get(
 router.delete(
     '/orders/delete',
     async (req: Request, res: Response): Promise<Response> => {
-        const orders = await OrderCartModel.findByIdAndRemove(req.body._id);
-        return res.json(orders);
+        const orders: OrderCart | null = await OrderInterlayer.deleteOrder(req.body, OrderCartModel);
+        return res.json({ orders, message: 'Order was deleted' });
     },
 );
 
