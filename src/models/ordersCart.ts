@@ -17,7 +17,7 @@ const ordersCartSchema: Schema = new Schema({
         type: Date,
         required: true,
     },
-    userEmail: String
+    userEmail: String,
 });
 
 export interface OrderCart extends Document {

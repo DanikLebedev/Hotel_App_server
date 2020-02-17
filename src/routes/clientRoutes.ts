@@ -5,9 +5,11 @@ import OrderModel, { Order } from '../models/order';
 import RoomModel, { RoomInt } from '../models/room';
 import daoRoom from '../interlayers/room.interlayer';
 import daoOrder from '../interlayers/order.interlayer';
-import OrderCartModel from '../models/ordersCart';
+import OrderCartModel, { OrderCart } from '../models/ordersCart';
 import OrderInterlayer from '../interlayers/order.interlayer';
 import RoomInterlayer from '../interlayers/room.interlayer';
+import CustomerModel, { Customer } from '../models/customer';
+import CustomerInterlayer from '../interlayers/customer.interlayer';
 
 const router = Router();
 
@@ -30,10 +32,18 @@ router.post(
                 return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
             }
             const rooms: RoomInt[] = await RoomModel.find();
+            const allOrders: OrderCart[] = await OrderCartModel.find();
+            const filteredOrders: OrderCart[] = allOrders.filter(order => {
+                return (
+                    order.category === req.body.category &&
+                    Date.parse(order.checkOut) < Date.parse(req.body.checkIn) &&
+                    order.status === 'booked'
+                );
+            });
             const filteredRooms: RoomInt[] = rooms.filter(item => {
                 return !item.isBooked && item.category === req.body.category;
             });
-            if (filteredRooms.length === 0) {
+            if (filteredRooms.length === 0 && filteredOrders.length === 0) {
                 return res.status(400).json({ message: 'All rooms are booked' });
             } else {
                 const notBookedRoomId: string = filteredRooms[0]._id;
@@ -87,7 +97,7 @@ router.delete(
 router.get(
     '/order',
     auth,
-    async (req: any, res: Response): Promise<Response> => {
+    async (req: Request, res: Response): Promise<Response> => {
         const orders: Order[] = await OrderInterlayer.getOneOrder(req, OrderModel);
         return res.json({ orders });
     },
@@ -98,6 +108,15 @@ router.get(
     async (req: Request, res: Response): Promise<Response> => {
         const rooms: RoomInt[] | null = await RoomInterlayer.getOneRoom(req, RoomModel);
         return res.json({ rooms });
+    },
+);
+
+router.get(
+    '/customer',
+    auth,
+    async (req: Request, res: Response): Promise<Response> => {
+        const customer: Customer[] | null = await CustomerInterlayer.getOneCustomer(req, CustomerModel);
+        return res.json(customer[0]);
     },
 );
 
