@@ -19,7 +19,8 @@ export default class RoomInterlayer {
         return await DbServices.deleteData(body, Model);
     }
 
-    public static async updateRoom(body, Model): Promise<RoomInt> {
-        return await DbServices.updateData(body, Model);
+    public static async updateRoom(req, Model): Promise<RoomInt> {
+        req.body.image = req.file.filename;
+        return await DbServices.updateData(req.body, Model);
     }
 }

@@ -31,24 +31,25 @@ router.post(
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
             }
-            const rooms: RoomInt[] = await RoomModel.find();
+            // const rooms: RoomInt[] = await RoomModel.find();
             const allOrders: OrderCart[] = await OrderCartModel.find();
             const filteredOrders: OrderCart[] = allOrders.filter(order => {
                 return (
                     order.category === req.body.category &&
-                    Date.parse(order.checkOut) < Date.parse(req.body.checkIn) &&
+                    Date.parse(order.checkOut) > Date.parse(req.body.checkIn) &&
                     order.status === 'booked'
                 );
             });
-            const filteredRooms: RoomInt[] = rooms.filter(item => {
-                return !item.isBooked && item.category === req.body.category;
-            });
-            if (filteredRooms.length === 0 && filteredOrders.length === 0) {
+            // const filteredRooms: RoomInt[] = rooms.filter(item => {
+            //     return !item.isBooked && item.category === req.body.category;
+            // });
+            if (filteredOrders.length !== 0) {
                 return res.status(400).json({ message: 'All rooms are booked' });
-            } else {
-                const notBookedRoomId: string = filteredRooms[0]._id;
-                await RoomModel.findByIdAndUpdate(notBookedRoomId, { isBooked: true }, { new: true });
             }
+            // else {
+            //     // const notBookedRoomId: string = filteredRooms[0]._id;
+            //     // await RoomModel.findByIdAndUpdate(notBookedRoomId, { isBooked: true }, { new: true });
+            // }
             const orders: Order = await daoOrder.postOrders(req, OrderModel);
             const userOrder: Order[] | null = await OrderModel.find({ owner: req.user.userId });
             if (userOrder) {
@@ -79,17 +80,16 @@ router.delete(
         const userOrder: Order | null = await OrderInterlayer.deleteOrder(req.body, OrderModel);
         if (userOrder) {
             await OrderCartModel.findOneAndUpdate({ orderId: userOrder._id }, { status: 'canceled' });
-            const rooms: RoomInt[] = await RoomModel.find();
-            const filteredRooms: RoomInt[] = rooms.filter(item => {
-                return item.isBooked && item.category === userOrder.category;
-            });
-            if (filteredRooms.length === 0) {
-                return res.json({ message: 'Order was deleted' });
-            } else {
-                const updateBookedRoomId: string = filteredRooms[0]._id;
-                await RoomModel.findByIdAndUpdate(updateBookedRoomId, { isBooked: false }, { new: true });
-                return res.json({ message: 'Order was deleted' });
-            }
+            // const rooms: RoomInt[] = await RoomModel.find();
+            // const filteredRooms: RoomInt[] = rooms.filter(item => {
+            //     return item.isBooked && item.category === userOrder.category;
+            // });
+            // if (filteredRooms.length === 0) {
+            //     return res.json({ message: 'Order was deleted' });
+            // } else {
+            //     const updateBookedRoomId: string = filteredRooms[0]._id;
+            //     await RoomModel.findByIdAndUpdate(updateBookedRoomId, { isBooked: false }, { new: true });
+            return res.json({ message: 'Order was deleted' });
         }
     },
 );

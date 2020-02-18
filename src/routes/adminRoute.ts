@@ -126,7 +126,7 @@ router.delete(
 router.put(
     '/room/update',
     async (req: Request, res: Response): Promise<Response> => {
-        const rooms: RoomInt | null = await RoomInterlayer.updateRoom(req.body, Room);
+        const rooms: RoomInt | null = await RoomInterlayer.updateRoom(req, Room);
         return res.json({ rooms, message: 'Room was updated' });
     },
 );
