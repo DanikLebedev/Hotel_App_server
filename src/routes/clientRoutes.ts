@@ -10,6 +10,8 @@ import OrderInterlayer from '../interlayers/order.interlayer';
 import RoomInterlayer from '../interlayers/room.interlayer';
 import CustomerModel, { Customer } from '../models/customer';
 import CustomerInterlayer from '../interlayers/customer.interlayer';
+import FeedbackModel, { Feedback } from '../models/feedback';
+import FeedbackInterlayer from '../interlayers/feedback.interlayer';
 
 const router = Router();
 
@@ -117,6 +119,15 @@ router.get(
     async (req: Request, res: Response): Promise<Response> => {
         const customer: Customer[] | null = await CustomerInterlayer.getOneCustomer(req, CustomerModel);
         return res.json(customer[0]);
+    },
+);
+
+router.post(
+    '/feedback/add',
+    async (req: Request, res: Response): Promise<Response> => {
+        console.log(req.body)
+        const feedback: Feedback | null = await FeedbackInterlayer.postFeedback(req, FeedbackModel);
+        return res.json({ feedback, message: 'Feedback successfully saved' });
     },
 );
 

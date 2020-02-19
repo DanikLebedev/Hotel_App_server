@@ -15,6 +15,8 @@ import StatusInterlayer from '../interlayers/status.interlayer';
 import { Customer } from '../models/customer';
 import OrderCartModel, { OrderCart } from '../models/ordersCart';
 import OrderInterlayer from '../interlayers/order.interlayer';
+import FeedbackModel, { Feedback } from '../models/feedback';
+import FeedbackInterlayer from '../interlayers/feedback.interlayer';
 
 const router: Router = Router();
 
@@ -213,6 +215,30 @@ router.delete(
     async (req: Request, res: Response): Promise<Response> => {
         const orders: OrderCart | null = await OrderInterlayer.deleteOrder(req.body, OrderCartModel);
         return res.json({ orders, message: 'Order was deleted' });
+    },
+);
+
+router.get(
+    '/feedbacks',
+    async (req: Request, res: Response): Promise<any> => {
+        const feedbacks: Feedback[] = await FeedbackInterlayer.getAllFeedbacks(FeedbackModel);
+        return res.json({ feedbacks });
+    },
+);
+
+router.put(
+    '/feedbacks/update',
+    async (req: Request, res: Response): Promise<Response> => {
+        const feedback: Feedback | null = await FeedbackInterlayer.updateFeedback(req.body, FeedbackModel);
+        return res.json({ feedback, message: 'Feedback was updated' });
+    },
+);
+
+router.delete(
+    '/feedbacks/delete',
+    async (req: Request, res: Response): Promise<Response> => {
+        const feedback: Feedback | null = await FeedbackInterlayer.deleteFeedback(req.body, FeedbackModel);
+        return res.json({ feedback, message: 'Feedback was deleted' });
     },
 );
 
