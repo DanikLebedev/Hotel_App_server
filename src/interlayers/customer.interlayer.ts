@@ -13,4 +13,8 @@ export default class CustomerInterlayer {
         const param = { _id: req.user.userId };
         return await DbServices.getDataByParam(param, Model);
     }
+
+    public static async updateCustomer(body, Model): Promise<Customer[]> {
+        return await DbServices.updateData(body, Model);
+    }
 }

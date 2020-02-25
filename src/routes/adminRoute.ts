@@ -43,7 +43,7 @@ router.post(
 router.post(
     '/category',
     check('title', 'Incorrect title').isString(),
-    async (req: Request, res: Response): Promise<Response> => {
+    async (req: Request, res: Response, next): Promise<Response> => {
         const errors: Result = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
@@ -55,7 +55,7 @@ router.post(
             });
         }
         const categories: CategoryInt = await CategoryInterlayer.postCategories(req.body, Category);
-        return res.status(201).json({ message: 'Category was created', categories });
+        return res.json({ message: 'Category was created', categories });
     },
 );
 
@@ -205,8 +205,16 @@ router.get(
 router.get(
     '/orders',
     async (req: Request, res: Response): Promise<any> => {
-        const orders: OrderCart[] = await OrderInterlayer.getAllOrders(OrderCartModel);
-        return res.json({ orders });
+        const ordercarts: OrderCart[] = await OrderInterlayer.getAllOrders(OrderCartModel);
+        return res.json({ ordercarts });
+    },
+);
+
+router.put(
+    '/orders/update',
+    async (req: Request, res: Response): Promise<Response> => {
+        const order: OrderCart | null = await OrderInterlayer.updateAdminOrder(req.body, OrderCartModel);
+        return res.json({ order, message: 'Order was updated' });
     },
 );
 

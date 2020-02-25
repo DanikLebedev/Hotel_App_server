@@ -8,10 +8,11 @@ import clientRoute from './routes/clientRoutes';
 import keys from '../keys/keys';
 import { DbServices } from './db/dbServices';
 import multer from 'multer';
-import OrderInterlayer from './interlayers/order.interlayer';
-import OrderModel, { Order } from './models/order';
+import fs from 'fs';
 import cron from 'node-cron';
 import OrderCartModel, { OrderCart } from './models/ordersCart';
+import RoomInterlayer from './interlayers/room.interlayer';
+import RoomModel, { RoomInt } from './models/room';
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {

@@ -23,6 +23,16 @@ router.get(
     },
 );
 
+router.get(
+    '/orderHistory',
+    auth,
+    async (req: any, res: Response): Promise<Response> => {
+        const customer: Customer[] = await CustomerModel.find({ _id: req.user.userId });
+        const ordercarts: OrderCart[] = await OrderInterlayer.getOrdersByParam(customer[0], OrderCartModel);
+        return res.json({ ordercarts });
+    },
+);
+
 router.post(
     '/order',
     auth,
@@ -33,7 +43,6 @@ router.post(
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
             }
-            // const rooms: RoomInt[] = await RoomModel.find();
             const allOrders: OrderCart[] = await OrderCartModel.find();
             const filteredOrders: OrderCart[] = allOrders.filter(order => {
                 return (
@@ -42,16 +51,9 @@ router.post(
                     order.status === 'booked'
                 );
             });
-            // const filteredRooms: RoomInt[] = rooms.filter(item => {
-            //     return !item.isBooked && item.category === req.body.category;
-            // });
             if (filteredOrders.length !== 0) {
                 return res.status(400).json({ message: 'All rooms are booked' });
             }
-            // else {
-            //     // const notBookedRoomId: string = filteredRooms[0]._id;
-            //     // await RoomModel.findByIdAndUpdate(notBookedRoomId, { isBooked: true }, { new: true });
-            // }
             const orders: Order = await daoOrder.postOrders(req, OrderModel);
             const userOrder: Order[] | null = await OrderModel.find({ owner: req.user.userId });
             if (userOrder) {
@@ -82,15 +84,6 @@ router.delete(
         const userOrder: Order | null = await OrderInterlayer.deleteOrder(req.body, OrderModel);
         if (userOrder) {
             await OrderCartModel.findOneAndUpdate({ orderId: userOrder._id }, { status: 'canceled' });
-            // const rooms: RoomInt[] = await RoomModel.find();
-            // const filteredRooms: RoomInt[] = rooms.filter(item => {
-            //     return item.isBooked && item.category === userOrder.category;
-            // });
-            // if (filteredRooms.length === 0) {
-            //     return res.json({ message: 'Order was deleted' });
-            // } else {
-            //     const updateBookedRoomId: string = filteredRooms[0]._id;
-            //     await RoomModel.findByIdAndUpdate(updateBookedRoomId, { isBooked: false }, { new: true });
             return res.json({ message: 'Order was deleted' });
         }
     },
@@ -122,10 +115,20 @@ router.get(
     },
 );
 
+router.put(
+    '/customer/update',
+    auth,
+    async (req: Request, res: Response): Promise<Response> => {
+        const customer: Customer[] | null = await CustomerInterlayer.updateCustomer(req.body, CustomerModel);
+        console.log(customer);
+        return res.json({ customer, message: 'Info successfully updated' });
+    },
+);
+
 router.post(
     '/feedback/add',
     async (req: Request, res: Response): Promise<Response> => {
-        console.log(req.body)
+        console.log(req.body);
         const feedback: Feedback | null = await FeedbackInterlayer.postFeedback(req, FeedbackModel);
         return res.json({ feedback, message: 'Feedback successfully saved' });
     },
