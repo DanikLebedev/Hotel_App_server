@@ -179,6 +179,7 @@ router.put(
     '/employee/update',
     async (req: Request, res: Response): Promise<Response> => {
         const employee: EmployeeI | null = await EmployeeInterlayer.updateEmployee(req.body, EmployeeModel);
+        console.log(employee)
         return res.json({ employee, message: 'Employee was updated' });
     },
 );
