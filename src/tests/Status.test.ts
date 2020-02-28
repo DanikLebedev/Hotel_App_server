@@ -27,4 +27,5 @@ describe('All Models Testing', () => {
         expect(validStatuses).toBeDefined();
         expect(validStatuses['title']).toBe('searcher');
     });
+
 });

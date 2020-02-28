@@ -1,4 +1,4 @@
-import request, { SuperTest, Response } from 'supertest';
+import request, {Response } from 'supertest';
 import app from '../index';
 
 describe('Testing authorize', () => {

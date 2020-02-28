@@ -31,4 +31,5 @@ describe('All Models Testing', () => {
         expect(validCustomers).toBeDefined();
         expect(validCustomers.email).toBe('dadadad@mail.ru');
     });
+
 });
