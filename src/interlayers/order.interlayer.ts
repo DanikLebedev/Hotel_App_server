@@ -21,7 +21,7 @@ export default class OrderInterlayer {
         return await DbServices.getDataByParam(param, Model);
     }
 
-    public static async getOneOrder(req, Model): Promise<Order[]> {
+    public static async getUserOrders(req, Model): Promise<Order[]> {
         const param = { owner: req.user.userId };
         return await DbServices.getDataByParam(param, Model);
     }

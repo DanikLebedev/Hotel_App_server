@@ -73,7 +73,7 @@ export class DbServices {
                 return res.status(400).json({ message: 'Incorrect password' });
             }
 
-            const token: string = jwt.sign({ userId: user.id }, keys.jwtSecret, { expiresIn: '1h' });
+            const token: string = jwt.sign({ userId: user.id }, keys.jwtSecret, { expiresIn: '3h' });
             return res.json({ token, userId: user.id, status: user.status, email: user.email });
         } catch (e) {
             console.log(e);

@@ -2,6 +2,7 @@ import express, { Express } from 'express';
 import path from 'path';
 import cors from 'cors';
 import adminRoute from './routes/adminRoute';
+import chatkitRoute from './routes/chatkitRoute';
 import bodyParser from 'body-parser';
 import authRoute from './routes/authRoute';
 import clientRoute from './routes/clientRoutes';
@@ -10,6 +11,7 @@ import { DbServices } from './db/dbServices';
 import multer from 'multer';
 import cron from 'node-cron';
 import OrderCartModel, { OrderCart } from './models/ordersCart';
+import OrderInterlayer from './interlayers/order.interlayer';
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -38,7 +40,7 @@ app.use(
 );
 
 cron.schedule('30 * * * *', async function(): Promise<void> {
-    const allOrders: OrderCart[] = await OrderCartModel.find();
+    const allOrders: OrderCart[] = await OrderInterlayer.getAllOrders(OrderCartModel);
     const today: number = new Date(Date.now()).getTime();
     allOrders.map(async order => {
         const checkOutDate: number = new Date(order.checkOut).getTime();
@@ -56,6 +58,7 @@ app.use('/static', express.static(path.resolve('uploads')));
 app.use('/api/auth', authRoute);
 app.use('/api/admin', adminRoute);
 app.use('/api/client', clientRoute);
+app.use('/api/chat', chatkitRoute);
 
 app.use(function(req, res, next, err): void {
     return res.status(404).json({ message: 'Path not found' });

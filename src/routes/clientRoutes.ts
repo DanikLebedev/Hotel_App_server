@@ -54,7 +54,7 @@ router.post(
             if (filteredOrders.length !== 0) {
                 return res.status(400).json({ message: 'All rooms are booked' });
             }
-            const orders: Order = await daoOrder.postOrders(req, OrderModel);
+            const orders: Order = await OrderInterlayer.postOrders(req, OrderModel);
             const userOrder: Order[] | null = await OrderModel.find({ owner: req.user.userId });
             if (userOrder) {
                 userOrder.map(async order => {
@@ -92,8 +92,8 @@ router.delete(
 router.get(
     '/order',
     auth,
-    async (req: Request, res: Response): Promise<Response> => {
-        const orders: Order[] = await OrderInterlayer.getOneOrder(req, OrderModel);
+    async (req: any, res: Response): Promise<Response> => {
+        const orders: Order[] = await OrderInterlayer.getUserOrders(req, OrderModel);
         return res.json({ orders });
     },
 );
