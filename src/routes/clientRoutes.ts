@@ -4,7 +4,6 @@ import { Result, validationResult } from 'express-validator';
 import OrderModel, { Order } from '../models/order';
 import RoomModel, { RoomInt } from '../models/room';
 import daoRoom from '../interlayers/room.interlayer';
-import daoOrder from '../interlayers/order.interlayer';
 import OrderCartModel, { OrderCart } from '../models/ordersCart';
 import OrderInterlayer from '../interlayers/order.interlayer';
 import RoomInterlayer from '../interlayers/room.interlayer';

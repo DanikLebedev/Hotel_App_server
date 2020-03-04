@@ -17,6 +17,7 @@ import OrderCartModel, { OrderCart } from '../models/ordersCart';
 import OrderInterlayer from '../interlayers/order.interlayer';
 import FeedbackModel, { Feedback } from '../models/feedback';
 import FeedbackInterlayer from '../interlayers/feedback.interlayer';
+import { isAdmin } from '../middleware/adminMiddleware';
 
 const router: Router = Router();
 
@@ -42,6 +43,8 @@ router.post(
 
 router.post(
     '/category',
+    auth,
+    isAdmin,
     check('title', 'Incorrect title').isString(),
     async (req: Request, res: Response, next): Promise<Response> => {
         const errors: Result = validationResult(req);
@@ -69,6 +72,8 @@ router.get(
 
 router.delete(
     '/category/delete',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
         const category: CategoryInt = await CategoryInterlayer.deleteCategories(req.body, Category);
 
@@ -78,6 +83,8 @@ router.delete(
 
 router.put(
     '/category/update',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
         const category: CategoryInt | null = await CategoryInterlayer.updateCategories(req.body, Category);
         return res.json({ category, message: 'Category was updated' });
@@ -119,6 +126,8 @@ router.get(
 
 router.delete(
     '/room/delete',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
         const room: RoomInt | null = await RoomInterlayer.deleteRoom(req.body, Room);
         return res.json({ room, message: 'Room was deleted' });
@@ -127,6 +136,8 @@ router.delete(
 
 router.put(
     '/room/update',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
         const rooms: RoomInt | null = await RoomInterlayer.updateRoom(req, Room);
         return res.json({ rooms, message: 'Room was updated' });
@@ -135,6 +146,8 @@ router.put(
 
 router.post(
     '/employee',
+    auth,
+    isAdmin,
     [
         check('email', 'Incorrect email').isEmail(),
         check('password', "Minimal password's length is 6").isLength({ min: 6 }),
@@ -161,6 +174,7 @@ router.post(
 
 router.get(
     '/employee',
+
     async (req: Request, res: Response): Promise<Response> => {
         const employees: EmployeeI[] = await EmployeeInterlayer.getAllEmployees(EmployeeModel);
         return res.json({ employees });
@@ -169,6 +183,8 @@ router.get(
 
 router.delete(
     '/employee/delete',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
         const employee: EmployeeI | null = await EmployeeInterlayer.deleteEmployee(req.body, EmployeeModel);
         return res.json({ employee, message: 'Employee was deleted' });
@@ -177,15 +193,19 @@ router.delete(
 
 router.put(
     '/employee/update',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
         const employee: EmployeeI | null = await EmployeeInterlayer.updateEmployee(req.body, EmployeeModel);
-        console.log(employee)
+        console.log(employee);
         return res.json({ employee, message: 'Employee was updated' });
     },
 );
 
 router.post(
     '/status',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
         const errors: Result = validationResult(req);
         if (!errors.isEmpty()) {
@@ -213,6 +233,8 @@ router.get(
 
 router.put(
     '/orders/update',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
         const order: OrderCart | null = await OrderInterlayer.updateAdminOrder(req.body, OrderCartModel);
         return res.json({ order, message: 'Order was updated' });
@@ -237,6 +259,8 @@ router.get(
 
 router.put(
     '/feedbacks/update',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
         const feedback: Feedback | null = await FeedbackInterlayer.updateFeedback(req.body, FeedbackModel);
         return res.json({ feedback, message: 'Feedback was updated' });
@@ -245,6 +269,8 @@ router.put(
 
 router.delete(
     '/feedbacks/delete',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
         const feedback: Feedback | null = await FeedbackInterlayer.deleteFeedback(req.body, FeedbackModel);
         return res.json({ feedback, message: 'Feedback was deleted' });
