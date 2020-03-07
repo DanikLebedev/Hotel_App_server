@@ -2,7 +2,6 @@ import express, { Express } from 'express';
 import path from 'path';
 import cors from 'cors';
 import adminRoute from './routes/adminRoute';
-import chatkitRoute from './routes/chatkitRoute';
 import chatWidgetRoute from './routes/chatWidgetRoute';
 import bodyParser from 'body-parser';
 import authRoute from './routes/authRoute';
@@ -59,7 +58,6 @@ app.use('/static', express.static(path.resolve('uploads')));
 app.use('/api/auth', authRoute);
 app.use('/api/admin', adminRoute);
 app.use('/api/client', clientRoute);
-app.use('/api/chat', chatkitRoute);
 app.use('/api/chatWidget', chatWidgetRoute);
 
 app.use(function(req, res, next, err): void {

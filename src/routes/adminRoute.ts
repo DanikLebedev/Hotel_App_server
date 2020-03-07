@@ -165,7 +165,7 @@ router.post(
                 });
             }
             const employee: EmployeeI = await EmployeeInterlayer.postEmployees(req, EmployeeModel);
-            return res.status(201).json({ message: 'User was created', employee });
+            return res.json({ message: 'User was created', employee });
         } catch (e) {
             return res.json({ message: 'Incorrect data' });
         }

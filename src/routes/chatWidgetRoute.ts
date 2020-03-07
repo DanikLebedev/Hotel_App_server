@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import fetch from 'node-fetch';
 
-const appID = '1485958f328b7c5';
-const apiKey = '6c9a68b2b740e48f082a6f6901e064e810cb8473';
+const appID = '1486021dc43c88b';
+const apiKey = 'aa7c3f35f8061e3f16e28783e2eac49e12aa503d';
 const agentUID = 'support';
 
 const url = 'https://api-eu.cometchat.io/v2.0';
@@ -21,6 +21,7 @@ const requestAuthToken = uid => {
         })
             .then(res => res.json())
             .then(data => {
+                console.log(data)
                 resolve(data.data.authToken);
             });
     });
@@ -42,7 +43,7 @@ router.get('/api/create', async (req, res) => {
     });
     const initData = await response.json();
     requestAuthToken(initData.data.uid).then(token => {
-        console.log('Success:' + JSON.stringify(token));
+        console.log('Success create :' + JSON.stringify(token));
         res.json(token);
     });
 });
@@ -51,7 +52,7 @@ router.get('/api/auth', (req, res) => {
     const uid = req.query.uid;
     requestAuthToken(uid)
         .then(token => {
-            console.log('Success:' + JSON.stringify(token));
+            console.log('Success auth:' + JSON.stringify(token));
             res.json(token);
         })
         .catch(error => console.error('Error:', error));
