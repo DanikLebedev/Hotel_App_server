@@ -18,6 +18,8 @@ import OrderInterlayer from '../interlayers/order.interlayer';
 import FeedbackModel, { Feedback } from '../models/feedback';
 import FeedbackInterlayer from '../interlayers/feedback.interlayer';
 import { isAdmin } from '../middleware/adminMiddleware';
+import ArticleModel, { ArticleInt } from '../models/article';
+import ArticleInterlayer from '../interlayers/article.interlayer';
 
 const router: Router = Router();
 
@@ -274,6 +276,38 @@ router.delete(
     async (req: Request, res: Response): Promise<Response> => {
         const feedback: Feedback | null = await FeedbackInterlayer.deleteFeedback(req.body, FeedbackModel);
         return res.json({ feedback, message: 'Feedback was deleted' });
+    },
+);
+
+router.post(
+    '/articles/create',
+    async (req: Request, res: Response): Promise<Response> => {
+        const article: ArticleInt | null = await ArticleInterlayer.postArticle(req, ArticleModel);
+        return res.json({ article, message: 'Article was created' });
+    },
+);
+
+router.get(
+    '/articles',
+    async (req: Request, res: Response): Promise<Response> => {
+        const article: ArticleInt[] | null = await ArticleInterlayer.getAllArticles(ArticleModel);
+        return res.json({ article });
+    },
+);
+
+router.put(
+    '/articles/update',
+    async (req: Request, res: Response): Promise<Response> => {
+        const article: ArticleInt | null = await ArticleInterlayer.updateArticle(req, ArticleModel);
+        return res.json({ article, message: 'Article was updated' });
+    },
+);
+
+router.delete(
+    '/articles/delete',
+    async (req: Request, res: Response): Promise<Response> => {
+        const article: ArticleInt | null = await ArticleInterlayer.deleteArticle(req.body, ArticleModel);
+        return res.json({ article, message: 'Article was updated' });
     },
 );
 

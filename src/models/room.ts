@@ -33,14 +33,6 @@ const roomSchema: Schema = new Schema(
             type: String,
             required: true,
         },
-        customerId: {
-            type: Types.ObjectId,
-            ref: 'Customer',
-        },
-        isBooked: {
-            type: Boolean,
-            default: false,
-        },
     },
     {
         timestamps: true,

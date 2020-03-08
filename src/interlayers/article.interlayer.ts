@@ -1,24 +1,24 @@
 import { DbServices } from '../db/dbServices';
-import { RoomInt } from '../models/room';
+import { ArticleInt } from '../models/article';
 
-export default class RoomInterlayer {
-    public static async getAllRoom(Model): Promise<RoomInt[]> {
+export default class ArticleInterlayer {
+    public static async getAllArticles(Model): Promise<ArticleInt[]> {
         return await DbServices.getData(Model);
     }
-    public static async postRooms(req, Model) {
+    public static async postArticle(req, Model) {
         req.body.image = req.file.filename;
         return await DbServices.postData(req.body, Model);
     }
 
-    public static async getOneRoom(req, Model): Promise<RoomInt[]> {
+    public static async getOneArticle(req, Model): Promise<ArticleInt[]> {
         return await DbServices.getDataByParam({ _id: req.params.id }, Model);
     }
 
-    public static async deleteRoom(body, Model): Promise<RoomInt> {
+    public static async deleteArticle(body, Model): Promise<ArticleInt> {
         return await DbServices.deleteData(body, Model);
     }
 
-    public static async updateRoom(req, Model): Promise<RoomInt> {
+    public static async updateArticle(req, Model): Promise<ArticleInt> {
         if (!req.file) {
             delete req.body.image;
             return await DbServices.updateData(req.body, Model);

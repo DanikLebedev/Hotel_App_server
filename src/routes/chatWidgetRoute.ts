@@ -21,7 +21,6 @@ const requestAuthToken = uid => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
                 resolve(data.data.authToken);
             });
     });
