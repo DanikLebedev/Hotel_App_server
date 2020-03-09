@@ -30,9 +30,6 @@ const app: Express = express();
 
 app.use(express.static(path.resolve('../hotel_app_client/build')));
 
-app.get('/*', function (req, res) {
-    res.sendFile(path.resolve('../hotel_app_client/build/index.html'));
-});
 
 app.use(upload.single('image'));
 app.use(bodyParser.json());

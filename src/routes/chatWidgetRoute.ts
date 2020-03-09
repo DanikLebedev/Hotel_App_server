@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import fetch from 'node-fetch';
+import {auth} from "../middleware/authMiddleware";
 
 const appID = '1486021dc43c88b';
 const apiKey = 'aa7c3f35f8061e3f16e28783e2eac49e12aa503d';
