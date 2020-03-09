@@ -11,7 +11,7 @@ import CustomerModel, { Customer } from '../models/customer';
 import CustomerInterlayer from '../interlayers/customer.interlayer';
 import FeedbackModel, { Feedback } from '../models/feedback';
 import FeedbackInterlayer from '../interlayers/feedback.interlayer';
-import { ArticleInt } from '../models/article';
+import ArticleModel, { ArticleInt } from '../models/article';
 import ArticleInterlayer from '../interlayers/article.interlayer';
 
 const router = Router();
@@ -138,7 +138,7 @@ router.post(
 router.get(
     '/article/:id',
     async (req: Request, res: Response): Promise<Response> => {
-        const article: ArticleInt[] | null = await ArticleInterlayer.getOneArticle(req, RoomModel);
+        const article: ArticleInt[] | null = await ArticleInterlayer.getOneArticle(req, ArticleModel);
         return res.json({ article });
     },
 );
