@@ -13,6 +13,21 @@ import cron from 'node-cron';
 import OrderCartModel, { OrderCart } from './models/ordersCart';
 import OrderInterlayer from './interlayers/order.interlayer';
 
+// const API_KEY = 'e692a6f26fb2ab5534d3f3b444aef2e8-ee13fadb-4835aa08';
+// const domain = 'sandbox94930664342a4ec28d909c2820d45985.mailgun.org';
+// const mailgun = mailgunService({ apiKey: API_KEY, domain: domain });
+//
+// const data = {
+//     from: 'Excited User <me@samples.mailgun.org>',
+//     to: 'danik_lebedev1999@mail.ru',
+//     subject: 'Hello',
+//     text: 'Testing some Mailgun awesomeness!',
+// };
+//
+// mailgun.messages().send(data, function(error, body) {
+//     console.log(body);
+// });
+
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, 'uploads');
@@ -29,7 +44,6 @@ const upload = multer({
 const app: Express = express();
 
 app.use(express.static(path.resolve('../hotel_app_client/build')));
-
 
 app.use(upload.single('image'));
 app.use(bodyParser.json());

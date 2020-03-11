@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import fetch from 'node-fetch';
 import {auth} from "../middleware/authMiddleware";
+import CustomerInterlayer from "../interlayers/customer.interlayer";
+import CustomerModel from "../models/customer";
 
 const appID = '1486021dc43c88b';
 const apiKey = 'aa7c3f35f8061e3f16e28783e2eac49e12aa503d';
@@ -27,10 +29,11 @@ const requestAuthToken = uid => {
     });
 };
 
-router.get('/api/create', async (req, res) => {
+router.get('/api/create', auth, async (req: any, res) => {
+    const user = await CustomerInterlayer.getOneCustomer(req, CustomerModel)
     const data = {
         uid: new Date().getTime(),
-        name: 'customer',
+        name: user[0].email,
     };
     const response = await fetch(`${url}/users`, {
         method: 'POST',

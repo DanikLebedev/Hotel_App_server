@@ -13,6 +13,13 @@ import FeedbackModel, { Feedback } from '../models/feedback';
 import FeedbackInterlayer from '../interlayers/feedback.interlayer';
 import ArticleModel, { ArticleInt } from '../models/article';
 import ArticleInterlayer from '../interlayers/article.interlayer';
+import crypto from 'crypto';
+import mailgunService from 'mailgun-js';
+import keys from '../../keys/keys';
+import reset from '../reset';
+import bcrypt from 'bcryptjs';
+
+const mailgun = mailgunService({ apiKey: keys.MAILGUN_API_KEY, domain: keys.MAILGUN_DOMAIN });
 
 const router = Router();
 
@@ -143,5 +150,51 @@ router.get(
     },
 );
 
+router.post('/reset', (req: Request, res: Response): void => {
+    crypto.randomBytes(32, async (err, buffer) => {
+        try {
+            if (err) {
+                return res.json({ message: 'someting wrong happened' });
+            }
+            const token = buffer.toString('hex');
+            const candidate = await CustomerModel.findOne({ email: req.body.email });
+
+            if (candidate) {
+                candidate.resetToken = token;
+                candidate.resetTokenExp = Date.now() + 60 * 60 * 1000;
+                await candidate.save();
+                await mailgun.messages().send(reset(candidate.email, token), function(error, body) {
+                    if(error) {
+                        console.log(error)
+                    }
+                    console.log(body);
+                });
+                return res.json({ message: 'Message sent, please check your email' , candidate});
+            } else {
+                return res.json({ message: 'Incorrect email' });
+            }
+        } catch (e) {
+            return res.json({ message: 'something wrong happened' });
+        }
+    });
+});
+
+router.post(
+    '/password',
+    async (req: Request, res: Response): Promise<Response> => {
+        const user = await CustomerModel.findOne({
+            resetToken: req.body.token,
+        });
+        if (user) {
+            user.password = await bcrypt.hash(req.body.password, 10);
+            delete user.resetTokenExp;
+            delete user.resetToken;
+            await user.save();
+            return res.json({ message: 'Your password successfully changed' });
+        } else {
+            return res.json({ message: 'Something wrong happened' });
+        }
+    },
+);
 
 export default router;

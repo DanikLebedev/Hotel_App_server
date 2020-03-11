@@ -17,6 +17,9 @@ const customerSchema: Schema = new Schema({
         type: String,
         required: true,
     },
+    status: String,
+    resetToken: String,
+    resetTokenExp: Date,
     order: [{ type: Types.ObjectId, ref: 'Order' }],
 });
 
@@ -25,6 +28,8 @@ export interface Customer extends Document {
     password: string;
     name: string;
     lastName: string;
+    resetToken: string;
+    resetTokenExp: number;
     order: [];
 }
 
