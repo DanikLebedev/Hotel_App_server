@@ -60,7 +60,7 @@ router.post(
                 );
             });
             if (filteredOrders.length !== 0) {
-                return res.status(400).json({ message: 'All rooms are booked' });
+                return res.status(400).json({ message: 'Sorry, all rooms are booked' });
             }
             const orders: Order = await OrderInterlayer.postOrders(req, OrderModel);
             const userOrder: Order[] | null = await OrderModel.find({ owner: req.user.userId });
@@ -80,8 +80,7 @@ router.post(
             }
             return res.status(201).json({ message: 'Order was created', orders });
         } catch (e) {
-            console.log(e);
-            return res.status(500).json({ message: e });
+            return res.json({ message:  'Something wrong happened' });
         }
     },
 );
@@ -89,11 +88,16 @@ router.post(
 router.delete(
     '/order/delete',
     async (req: Request, res: Response): Promise<any> => {
-        const userOrder: Order | null = await OrderInterlayer.deleteOrder(req.body, OrderModel);
-        if (userOrder) {
-            await OrderCartModel.findOneAndUpdate({ orderId: userOrder._id }, { status: 'canceled' });
-            return res.json({ message: 'Order was deleted' });
+        try {
+            const userOrder: Order | null = await OrderInterlayer.deleteOrder(req.body, OrderModel);
+            if (userOrder) {
+                await OrderCartModel.findOneAndUpdate({ orderId: userOrder._id }, { status: 'canceled' });
+                return res.json({ message: 'Order was deleted' });
+            }
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
         }
+
     },
 );
 
@@ -127,18 +131,26 @@ router.put(
     '/customer/update',
     auth,
     async (req: Request, res: Response): Promise<Response> => {
-        const customer: Customer[] | null = await CustomerInterlayer.updateCustomer(req.body, CustomerModel);
-        console.log(customer);
-        return res.json({ customer, message: 'Info successfully updated' });
+        try {
+            const customer: Customer[] | null = await CustomerInterlayer.updateCustomer(req.body, CustomerModel);
+            return res.json({ customer, message: 'Info successfully updated' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
+
     },
 );
 
 router.post(
     '/feedback/add',
     async (req: Request, res: Response): Promise<Response> => {
-        console.log(req.body);
-        const feedback: Feedback | null = await FeedbackInterlayer.postFeedback(req, FeedbackModel);
-        return res.json({ feedback, message: 'Feedback successfully saved' });
+        try {
+            const feedback: Feedback | null = await FeedbackInterlayer.postFeedback(req, FeedbackModel);
+            return res.json({ feedback, message: 'Feedback successfully saved' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
+
     },
 );
 

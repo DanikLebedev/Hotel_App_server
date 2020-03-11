@@ -53,14 +53,18 @@ router.post(
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
         }
-        const candidate: CategoryInt | null = await Category.findOne({ title: req.body.title });
-        if (candidate) {
-            return res.status(400).json({
-                message: 'Тhis category is already created',
-            });
+        try {
+            const candidate: CategoryInt | null = await Category.findOne({ title: req.body.title });
+            if (candidate) {
+                return res.status(400).json({
+                    message: 'Тhis category is already created',
+                });
+            }
+            const categories: CategoryInt = await CategoryInterlayer.postCategories(req.body, Category);
+            return res.json({ message: 'Category was created', categories });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
         }
-        const categories: CategoryInt = await CategoryInterlayer.postCategories(req.body, Category);
-        return res.json({ message: 'Category was created', categories });
     },
 );
 
@@ -77,9 +81,12 @@ router.delete(
     auth,
     isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const category: CategoryInt = await CategoryInterlayer.deleteCategories(req.body, Category);
-
-        return res.json({ message: 'Category was deleted', category });
+        try {
+            const category: CategoryInt = await CategoryInterlayer.deleteCategories(req.body, Category);
+            return res.json({ message: 'Category was deleted', category });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
@@ -88,8 +95,12 @@ router.put(
     auth,
     isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const category: CategoryInt | null = await CategoryInterlayer.updateCategories(req.body, Category);
-        return res.json({ category, message: 'Category was updated' });
+        try {
+            const category: CategoryInt | null = await CategoryInterlayer.updateCategories(req.body, Category);
+            return res.json({ category, message: 'Category was updated' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
@@ -112,8 +123,7 @@ router.post(
             const rooms: RoomInt = await RoomInterlayer.postRooms(req, Room);
             return res.status(201).json({ message: 'Room was created', rooms: rooms });
         } catch (e) {
-            console.log(e);
-            return res.status(500).json({ message: e });
+            return res.json({ message: 'Something wrong happened' });
         }
     },
 );
@@ -131,8 +141,12 @@ router.delete(
     auth,
     isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const room: RoomInt | null = await RoomInterlayer.deleteRoom(req.body, Room);
-        return res.json({ room, message: 'Room was deleted' });
+        try {
+            const room: RoomInt | null = await RoomInterlayer.deleteRoom(req.body, Room);
+            return res.json({ room, message: 'Room was deleted' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
@@ -141,8 +155,12 @@ router.put(
     auth,
     isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const rooms: RoomInt | null = await RoomInterlayer.updateRoom(req, Room);
-        return res.json({ rooms, message: 'Room was updated' });
+        try {
+            const rooms: RoomInt | null = await RoomInterlayer.updateRoom(req, Room);
+            return res.json({ rooms, message: 'Room was updated' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
@@ -188,8 +206,12 @@ router.delete(
     auth,
     isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const employee: EmployeeI | null = await EmployeeInterlayer.deleteEmployee(req.body, EmployeeModel);
-        return res.json({ employee, message: 'Employee was deleted' });
+        try {
+            const employee: EmployeeI | null = await EmployeeInterlayer.deleteEmployee(req.body, EmployeeModel);
+            return res.json({ employee, message: 'Employee was deleted' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
@@ -198,9 +220,12 @@ router.put(
     auth,
     isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const employee: EmployeeI | null = await EmployeeInterlayer.updateEmployee(req.body, EmployeeModel);
-        console.log(employee);
-        return res.json({ employee, message: 'Employee was updated' });
+        try {
+            const employee: EmployeeI | null = await EmployeeInterlayer.updateEmployee(req.body, EmployeeModel);
+            return res.json({ employee, message: 'Employee was updated' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
@@ -213,8 +238,12 @@ router.post(
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: 'Incorrect data, please try again' });
         }
-        const statuses: StatusInt = await StatusInterlayer.postStatus(req.body, StatusModel);
-        return res.status(201).json({ message: 'status was created', statuses });
+        try {
+            const statuses: StatusInt = await StatusInterlayer.postStatus(req.body, StatusModel);
+            return res.status(201).json({ message: 'status was created', statuses });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 router.get(
@@ -238,16 +267,24 @@ router.put(
     auth,
     isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const order: OrderCart | null = await OrderInterlayer.updateAdminOrder(req.body, OrderCartModel);
-        return res.json({ order, message: 'Order was updated' });
+        try {
+            const order: OrderCart | null = await OrderInterlayer.updateAdminOrder(req.body, OrderCartModel);
+            return res.json({ order, message: 'Order was updated' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
 router.delete(
     '/orders/delete',
     async (req: Request, res: Response): Promise<Response> => {
-        const orders: OrderCart | null = await OrderInterlayer.deleteOrder(req.body, OrderCartModel);
-        return res.json({ orders, message: 'Order was deleted' });
+        try {
+            const orders: OrderCart | null = await OrderInterlayer.deleteOrder(req.body, OrderCartModel);
+            return res.json({ orders, message: 'Order was deleted' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
@@ -264,8 +301,12 @@ router.put(
     auth,
     isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const feedback: Feedback | null = await FeedbackInterlayer.updateFeedback(req.body, FeedbackModel);
-        return res.json({ feedback, message: 'Feedback was updated' });
+        try {
+            const feedback: Feedback | null = await FeedbackInterlayer.updateFeedback(req.body, FeedbackModel);
+            return res.json({ feedback, message: 'Feedback was updated' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
@@ -274,16 +315,26 @@ router.delete(
     auth,
     isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const feedback: Feedback | null = await FeedbackInterlayer.deleteFeedback(req.body, FeedbackModel);
-        return res.json({ feedback, message: 'Feedback was deleted' });
+        try {
+            const feedback: Feedback | null = await FeedbackInterlayer.deleteFeedback(req.body, FeedbackModel);
+            return res.json({ feedback, message: 'Feedback was deleted' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
 router.post(
     '/articles/create',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const article: ArticleInt | null = await ArticleInterlayer.postArticle(req, ArticleModel);
-        return res.json({ article, message: 'Article was created' });
+        try {
+            const article: ArticleInt | null = await ArticleInterlayer.postArticle(req, ArticleModel);
+            return res.json({ article, message: 'Article was created' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
@@ -297,17 +348,29 @@ router.get(
 
 router.put(
     '/articles/update',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const article: ArticleInt | null = await ArticleInterlayer.updateArticle(req, ArticleModel);
-        return res.json({ article, message: 'Article was updated' });
+        try {
+            const article: ArticleInt | null = await ArticleInterlayer.updateArticle(req, ArticleModel);
+            return res.json({ article, message: 'Article was updated' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
 router.delete(
     '/articles/delete',
+    auth,
+    isAdmin,
     async (req: Request, res: Response): Promise<Response> => {
-        const article: ArticleInt | null = await ArticleInterlayer.deleteArticle(req.body, ArticleModel);
-        return res.json({ article, message: 'Article was updated' });
+        try {
+            const article: ArticleInt | null = await ArticleInterlayer.deleteArticle(req.body, ArticleModel);
+            return res.json({ article, message: 'Article was updated' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 

@@ -1,7 +1,6 @@
 import { DbServices } from '../db/dbServices';
 import { Order } from '../models/order';
 import { OrderCart } from '../models/ordersCart';
-import { model } from 'mongoose';
 
 export default class OrderInterlayer {
     public static async getAllOrders(Model): Promise<OrderCart[]> {

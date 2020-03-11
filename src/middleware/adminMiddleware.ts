@@ -3,6 +3,6 @@ export const isAdmin = async (req, res, next): Promise<void> => {
         return res.json({ message: 'something went wrong' });
     }
     const user = req.user;
-    if (user.status !== 'admin' || user.status !== 'manager') return res.status(403).json({ message: 'Access denied' });
+    if (user.status !== 'admin' && user.status !== 'manager') return res.status(403).json({ message: 'Access denied' });
     next();
 };
