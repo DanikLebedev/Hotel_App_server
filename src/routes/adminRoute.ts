@@ -256,9 +256,37 @@ router.get(
 
 router.get(
     '/orders',
-    async (req: Request, res: Response): Promise<any> => {
+    async (req: Request, res: Response): Promise<Response> => {
         const ordercarts: OrderCart[] = await OrderInterlayer.getAllOrders(OrderCartModel);
         return res.json({ ordercarts });
+    },
+);
+
+router.post(
+    '/orders/create',
+    [
+        check('category', 'Incorrect category title').isString(),
+        check('price', 'Incorrect price').isInt(),
+        check('userEmail', 'Incorrect user email').isString(),
+        check('checkIn', 'Incorrect checkIn date'),
+        check('checkOut', 'Incorrect checkOut date'),
+    ],
+    auth,
+    isAdmin,
+    async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const user: Customer | null = await CustomerModel.findOne({ email: req.body.userEmail });
+            if (!user) {
+                return res.json({ message: 'Invalid user email' });
+            }
+            if (user) {
+                req.body.userId = user._id;
+            }
+            const ordercarts: OrderCart = await OrderInterlayer.postAdminOrders(req, OrderCartModel);
+            return res.json({ ordercarts, message: 'Order was created' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
     },
 );
 
@@ -290,7 +318,7 @@ router.delete(
 
 router.get(
     '/feedbacks',
-    async (req: Request, res: Response): Promise<any> => {
+    async (req: Request, res: Response): Promise<Response> => {
         const feedbacks: Feedback[] = await FeedbackInterlayer.getAllFeedbacks(FeedbackModel);
         return res.json({ feedbacks });
     },
@@ -326,6 +354,10 @@ router.delete(
 
 router.post(
     '/articles/create',
+    [
+        check('title', 'Incorrect article title').isString(),
+        check('text', 'Incorrect article text').isString(),
+    ],
     auth,
     isAdmin,
     async (req: Request, res: Response): Promise<Response> => {

@@ -11,6 +11,10 @@ export default class OrderInterlayer {
         return await DbServices.postData(req.body, Model);
     }
 
+    public static async postAdminOrders(req, Model): Promise<OrderCart> {
+        return await DbServices.postData(req.body, Model);
+    }
+
     public static async deleteOrder(body, Model): Promise<any> {
         return await DbServices.deleteData(body, Model);
     }
@@ -21,7 +25,7 @@ export default class OrderInterlayer {
     }
 
     public static async getUserOrders(req, Model): Promise<Order[]> {
-        const param = { owner: req.user.userId };
+        const param = { userId: req.user.userId };
         return await DbServices.getDataByParam(param, Model);
     }
 

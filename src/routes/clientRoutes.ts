@@ -74,30 +74,47 @@ router.post(
                         checkOut: order.checkOut,
                         price: order.price,
                         userEmail: order.userEmail,
+                        guests: order.guests,
+                        comment: order.comment,
+                        userId: order.owner,
                     });
                     await orderCartItem.save();
                 });
             }
             return res.status(201).json({ message: 'Order was created', orders });
         } catch (e) {
-            return res.json({ message:  'Something wrong happened' });
+            return res.json({ message: 'Something wrong happened' });
+        }
+    },
+);
+
+router.put(
+    '/order/delete',
+    async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const order: OrderCart | null = await OrderCartModel.findByIdAndUpdate(req.body._id, {
+                status: 'canceled',
+            });
+            return res.json({ order, message: 'Order was canceled' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
         }
     },
 );
 
 router.delete(
-    '/order/delete',
-    async (req: Request, res: Response): Promise<any> => {
+    '/userOrder/delete',
+    auth,
+    async (req: any, res: Response): Promise<Response> => {
         try {
-            const userOrder: Order | null = await OrderInterlayer.deleteOrder(req.body, OrderModel);
-            if (userOrder) {
-                await OrderCartModel.findOneAndUpdate({ orderId: userOrder._id }, { status: 'canceled' });
-                return res.json({ message: 'Order was deleted' });
-            }
+            const order: OrderCart | null = await OrderCartModel.findByIdAndUpdate(req.body._id, {
+                status: 'canceled',
+            });
+            await OrderModel.findOneAndRemove({ owner: req.user.userId });
+            return res.json({ order, message: 'Order was canceled' });
         } catch (e) {
             return res.json({ message: 'Something wrong happened' });
         }
-
     },
 );
 
@@ -105,7 +122,7 @@ router.get(
     '/order',
     auth,
     async (req: any, res: Response): Promise<Response> => {
-        const orders: Order[] = await OrderInterlayer.getUserOrders(req, OrderModel);
+        const orders: Order[] = await OrderInterlayer.getUserOrders(req, OrderCartModel);
         return res.json({ orders });
     },
 );
@@ -137,7 +154,6 @@ router.put(
         } catch (e) {
             return res.json({ message: 'Something wrong happened' });
         }
-
     },
 );
 
@@ -150,7 +166,6 @@ router.post(
         } catch (e) {
             return res.json({ message: 'Something wrong happened' });
         }
-
     },
 );
 
@@ -176,12 +191,12 @@ router.post('/reset', (req: Request, res: Response): void => {
                 candidate.resetTokenExp = Date.now() + 60 * 60 * 1000;
                 await candidate.save();
                 await mailgun.messages().send(reset(candidate.email, token), function(error, body) {
-                    if(error) {
-                        console.log(error)
+                    if (error) {
+                        console.log(error);
                     }
                     console.log(body);
                 });
-                return res.json({ message: 'Message sent, please check your email' , candidate});
+                return res.json({ message: 'Message sent, please check your email', candidate });
             } else {
                 return res.json({ message: 'Incorrect email' });
             }
