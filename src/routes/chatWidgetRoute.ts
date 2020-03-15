@@ -5,7 +5,7 @@ import CustomerInterlayer from "../interlayers/customer.interlayer";
 import CustomerModel from "../models/customer";
 
 const appID = '1486021dc43c88b';
-const apiKey = 'aa7c3f35f8061e3f16e28783e2eac49e12aa503d';
+const apiKey = 'c3c0291af7c308d535611d65c573eb9ca7f3432f';
 const agentUID = 'support';
 
 const url = 'https://api-eu.cometchat.io/v2.0';
@@ -45,6 +45,7 @@ router.get('/api/create', auth, async (req: any, res) => {
         },
     });
     const initData = await response.json();
+    console.log(initData)
     requestAuthToken(initData.data.uid).then(token => {
         console.log('Success create :' + JSON.stringify(token));
         res.json(token);

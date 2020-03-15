@@ -45,6 +45,7 @@ router.post(
     '/order',
     auth,
     async (req: any, res: Response): Promise<Response> => {
+        console.log(req.body);
         try {
             const errors: Result = validationResult(req);
 
@@ -62,29 +63,43 @@ router.post(
             if (filteredOrders.length !== 0) {
                 return res.status(400).json({ message: 'Sorry, all rooms are booked' });
             }
-            const orders: Order = await OrderInterlayer.postOrders(req, OrderModel);
-            const userOrder: Order[] | null = await OrderModel.find({ owner: req.user.userId });
-            if (userOrder) {
-                userOrder.map(async order => {
-                    const orderCartItem = new OrderCartModel({
-                        status: order.status,
-                        orderId: order._id,
-                        category: order.category,
-                        checkIn: order.checkIn,
-                        checkOut: order.checkOut,
-                        price: order.price,
-                        userEmail: order.userEmail,
-                        guests: order.guests,
-                        comment: order.comment,
-                        userId: order.owner,
-                    });
-                    await orderCartItem.save();
-                });
+
+            const user: Customer | null = await CustomerModel.findOne({ email: req.body.userEmail });
+            if (!user) {
+                return res.json({ message: 'Invalid user email' });
             }
-            return res.status(201).json({ message: 'Order was created', orders });
+            if (user) {
+                req.body.userId = user._id;
+            }
+            const ordercarts: OrderCart = await OrderInterlayer.postAdminOrders(req, OrderCartModel);
+            return res.json({ ordercarts, message: 'Order was created' });
         } catch (e) {
             return res.json({ message: 'Something wrong happened' });
         }
+
+        // const orders: Order = await OrderInterlayer.postOrders(req, OrderModel);
+        // const userOrder: Order[] | null = await OrderModel.find({ owner: req.user.userId });
+        // if (userOrder) {
+        //     userOrder.map(async order => {
+        //         const orderCartItem = new OrderCartModel({
+        //             status: order.status,
+        //             orderId: order._id,
+        //             category: order.category,
+        //             checkIn: order.checkIn,
+        //             checkOut: order.checkOut,
+        //             price: order.price,
+        //             userEmail: order.userEmail,
+        //             guests: order.guests,
+        //             comment: order.comment,
+        //             userId: order.owner,
+        //         });
+        //         await orderCartItem.save();
+        //     });
+        // }
+        // return res.status(201).json({ message: 'Order was created', orders });
+        // } catch (e) {
+        //     return res.json({ message: 'Something wrong happened' });
+        // }
     },
 );
 

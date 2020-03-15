@@ -8,8 +8,8 @@ const keys = {
     APP_COMET_API_KEY: '3ce5b2c74f989d220f3f0db10c497ab552da64f5',
     APP_COMET_AGENT_UID: 'support',
     COMET_CHAT_URL: 'https://api-us.cometchat.io/v2.0',
-    MAILGUN_API_KEY: '<your api key>',
-    MAILGUN_DOMAIN: '<your domain>',
+    MAILGUN_API_KEY: '<api key>',
+    MAILGUN_DOMAIN: '<domain>',
     HOTEL_EMAIL: 'Rixos Hotel <Hotel@samples.mailgun.org>',
     BASE_CLIENT_URL: 'http://localhost:3000'
 };
