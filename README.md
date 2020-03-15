@@ -49,7 +49,7 @@ export class DbServices {
 ...
 }    
 ```
-##Tests
+## Tests
 Also I added some unit tests. You can find them in folder 'tests'.
 There are some examples:
 ```
@@ -87,5 +87,5 @@ describe('Category model testing', () => {
 ...
 }
 ```
-##Find a bug?
+## Find a bug?
 Please send me an email to danik_lebedev1999@mail.ru with issue)

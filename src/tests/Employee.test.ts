@@ -18,7 +18,7 @@ const deleteData = {
     _id: '5e47d23ccded483574e86f01',
 };
 
-describe('All Models Testing', () => {
+describe('Room model Testing', () => {
     beforeAll(async () => {
         await mongoose.connect(
             keys.MONGODB_URI,

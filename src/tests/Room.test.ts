@@ -20,7 +20,7 @@ const updateRoomData = {
     title: 'Update title',
 };
 
-describe('All Models Testing', () => {
+describe('Room model Testing', () => {
     beforeAll(async () => {
         await mongoose.connect(
             keys.MONGODB_URI,

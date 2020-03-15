@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import daoCustomer from '../interlayers/customer.interlayer';
 import CustomerModel from '../models/customer';
 
-describe('All Models Testing', () => {
+describe('Room model Testing', () => {
     beforeAll(async () => {
         await mongoose.connect(
             keys.MONGODB_URI,
