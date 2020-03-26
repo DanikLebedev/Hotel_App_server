@@ -18,6 +18,8 @@ import mailgunService from 'mailgun-js';
 import keys from '../../keys/keys';
 import reset from '../reset';
 import bcrypt from 'bcryptjs';
+import CommentModel, { CommentInt } from '../models/comment';
+import CommentInterlayer from '../interlayers/comment.interlayer';
 
 const mailgun = mailgunService({ apiKey: keys.MAILGUN_API_KEY, domain: keys.MAILGUN_DOMAIN });
 
@@ -76,30 +78,6 @@ router.post(
         } catch (e) {
             return res.json({ message: 'Something wrong happened' });
         }
-
-        // const orders: Order = await OrderInterlayer.postOrders(req, OrderModel);
-        // const userOrder: Order[] | null = await OrderModel.find({ owner: req.user.userId });
-        // if (userOrder) {
-        //     userOrder.map(async order => {
-        //         const orderCartItem = new OrderCartModel({
-        //             status: order.status,
-        //             orderId: order._id,
-        //             category: order.category,
-        //             checkIn: order.checkIn,
-        //             checkOut: order.checkOut,
-        //             price: order.price,
-        //             userEmail: order.userEmail,
-        //             guests: order.guests,
-        //             comment: order.comment,
-        //             userId: order.owner,
-        //         });
-        //         await orderCartItem.save();
-        //     });
-        // }
-        // return res.status(201).json({ message: 'Order was created', orders });
-        // } catch (e) {
-        //     return res.json({ message: 'Something wrong happened' });
-        // }
     },
 );
 
@@ -234,6 +212,61 @@ router.post(
             await user.save();
             return res.json({ message: 'Your password successfully changed' });
         } else {
+            return res.json({ message: 'Something wrong happened' });
+        }
+    },
+);
+
+router.get(
+    '/comment',
+    async (req: Request, res: Response): Promise<Response> => {
+        const comment: CommentInt[] | null = await CommentInterlayer.getAllComments(CommentModel);
+        return res.json({ comment });
+    },
+);
+
+router.post(
+    '/comment/add',
+    async (req: Request, res: Response): Promise<Response> => {
+        try {
+            console.log(req.body)
+            const comment: CommentInt | null = await CommentInterlayer.postComment(req.body, CommentModel);
+            return res.json({ comment, message: 'Comment successfully saved' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
+    },
+);
+
+router.get(
+    '/comment',
+    async (req: Request, res: Response): Promise<Response> => {
+        const comment: CommentInt[] | null = await CommentInterlayer.getAllComments(CommentModel);
+        return res.json( comment );
+    },
+);
+
+router.delete(
+    '/comment/delete',
+    auth,
+    async (req: any, res: Response): Promise<Response> => {
+        try {
+            const comment: CommentInt | null = await CommentInterlayer.deleteComment(req.body, CommentModel);
+            return res.json({ comment, message: 'Comment was deleted' });
+        } catch (e) {
+            return res.json({ message: 'Something wrong happened' });
+        }
+    },
+);
+
+router.put(
+    '/comment/update',
+    auth,
+    async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const comment: CommentInt | null = await CommentInterlayer.updateComment(req.body, CommentModel);
+            return res.json({ comment, message: 'Comment successfully updated' });
+        } catch (e) {
             return res.json({ message: 'Something wrong happened' });
         }
     },
