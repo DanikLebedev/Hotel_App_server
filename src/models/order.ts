@@ -9,6 +9,7 @@ const orderSchema: Schema = new Schema({
         type: String,
         required: true,
     },
+
     checkIn: {
         type: Date,
         required: true,

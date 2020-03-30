@@ -1,6 +1,10 @@
 import { DbServices } from '../db/dbServices';
 import { RoomInt } from '../models/room';
 
+function getBool(val) {
+    return !!JSON.parse(String(val).toLowerCase());
+}
+
 export default class RoomInterlayer {
     public static async getAllRoom(Model): Promise<RoomInt[]> {
         return await DbServices.getData(Model);
@@ -19,6 +23,7 @@ export default class RoomInterlayer {
     }
 
     public static async updateRoom(req, Model): Promise<RoomInt> {
+        console.log(req.body.balcony)
         if (!req.file) {
             delete req.body.image;
             return await DbServices.updateData(req.body, Model);

@@ -159,6 +159,7 @@ router.put(
             const rooms: RoomInt | null = await RoomInterlayer.updateRoom(req, Room);
             return res.json({ rooms, message: 'Room was updated' });
         } catch (e) {
+            console.log(e.message)
             return res.json({ message: 'Something wrong happened' });
         }
     },

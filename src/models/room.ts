@@ -3,7 +3,7 @@ const roomSchema: Schema = new Schema(
     {
         category: {
             type: String,
-            required: true
+            required: true,
         },
         title: {
             type: String,
@@ -30,6 +30,14 @@ const roomSchema: Schema = new Schema(
             required: true,
         },
         image: {
+            type: String,
+            required: true,
+        },
+        beds: {
+            type: Number,
+            required: true,
+        },
+        food: {
             type: String,
             required: true,
         },

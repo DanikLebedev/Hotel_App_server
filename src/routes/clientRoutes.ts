@@ -131,9 +131,18 @@ router.get(
 router.get(
     '/customer',
     auth,
-    async (req: Request, res: Response): Promise<Response> => {
-        const customer: Customer[] | null = await CustomerInterlayer.getOneCustomer(req, CustomerModel);
-        return res.json(customer[0]);
+    async (req: any, res: Response): Promise<Response> => {
+        try {
+            const candidate: Customer | null = await CustomerModel.findById(req.user.userId);
+            if (candidate) {
+                const customer: Customer[] | null = await CustomerInterlayer.getOneCustomer(req, CustomerModel);
+                return res.json(customer[0]);
+            } else {
+                return res.json({ message: 'Incorrect user' });
+            }
+        } catch (e) {
+            return res.json({ message: 'Something went wrong' });
+        }
     },
 );
 
@@ -229,7 +238,7 @@ router.post(
     '/comment/add',
     async (req: Request, res: Response): Promise<Response> => {
         try {
-            console.log(req.body)
+            console.log(req.body);
             const comment: CommentInt | null = await CommentInterlayer.postComment(req.body, CommentModel);
             return res.json({ comment, message: 'Comment successfully saved' });
         } catch (e) {
@@ -242,7 +251,7 @@ router.get(
     '/comment',
     async (req: Request, res: Response): Promise<Response> => {
         const comment: CommentInt[] | null = await CommentInterlayer.getAllComments(CommentModel);
-        return res.json( comment );
+        return res.json(comment);
     },
 );
 
@@ -264,6 +273,7 @@ router.put(
     auth,
     async (req: Request, res: Response): Promise<Response> => {
         try {
+            console.log(req.body);
             const comment: CommentInt | null = await CommentInterlayer.updateComment(req.body, CommentModel);
             return res.json({ comment, message: 'Comment successfully updated' });
         } catch (e) {

@@ -14,6 +14,10 @@ const ordersCartSchema: Schema = new Schema({
         type: Date,
         required: true,
     },
+    title: {
+        type: String,
+        required: true,
+    },
     price: {
         type: Number,
         required: true,
@@ -28,7 +32,6 @@ const ordersCartSchema: Schema = new Schema({
     },
     comment: {
         type: String,
-        required: true,
     },
     userId: {
         type: String,
